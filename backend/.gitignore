@@ -1,0 +1,9 @@
+# Python虛擬環境
+venv/
+
+# Python編譯檔
+__pycache__/
+*.pyc
+
+# 環境變數
+.env
