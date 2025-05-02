@@ -13,7 +13,7 @@ body {
 
 /* 登入頁面樣式 */
 .login-container {
-  width: 40%;
+  width: 300%;
   display: flex;
   flex-direction: column;
   justify-content: center;
