@@ -34,6 +34,10 @@ function App() {
 }
 
 export default App
+
+const handleLogin = () => {
+    setIsLoggedIn(true)
+  }
 */
 import { useState } from 'react'
 import Login from './components/Login'
@@ -41,14 +45,23 @@ import MainApp from './components/MainApp'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
 
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-  }
+  const handleLogin = () => setIsLoggedIn(true)
+  const handleLogout = () => setIsLoggedIn(false)
 
   return (
     <div className="app">
-      {!isLoggedIn ? <Login onLogin={handleLogin} /> : <MainApp />}
+      {showRegister ? (
+      <Register onRegisterSuccess={() => setShowRegister(false)} />
+    ) : !isLoggedIn ? (
+      <>
+        <Login onLogin={handleLogin} />
+        <button onClick={() => setShowRegister(true)}>沒有帳號？註冊</button>
+      </>
+    ) : (
+      <MainApp onLogout={handleLogout} />
+    )}
     </div>
   )
 }

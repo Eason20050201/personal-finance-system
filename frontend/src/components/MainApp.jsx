@@ -5,10 +5,10 @@ import SavingsGoals from './SavingsGoals'
 import FinancialCharts from './FinancialCharts'
 import AdviceCards from './AdviceCards'
 
-const MainApp = () => {
+const MainApp = ({onLogout}) => {
   return (
     <div className="main-container">
-      <NavBar />
+      <NavBar onLogout={onLogout} />
       
       <div className="quick-actions">
         <button className="action-btn">+ 記錄 提交更新并更新預留日明細表</button>
