@@ -1,3 +1,4 @@
+/*
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -29,6 +30,26 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
+  )
+}
+
+export default App
+*/
+import { useState } from 'react'
+import Login from './components/Login'
+import MainApp from './components/MainApp'
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const handleLogin = () => {
+    setIsLoggedIn(true)
+  }
+
+  return (
+    <div className="app">
+      {!isLoggedIn ? <Login onLogin={handleLogin} /> : <MainApp />}
+    </div>
   )
 }
 
