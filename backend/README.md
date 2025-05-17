@@ -88,12 +88,29 @@ mysql -u root -p finance_db < ../sql/Relations.sql
 
 ```plaintext
 backend/
-├── main.py              # FastAPI 主程式入口
-├── database.py          # 資料庫連線設定
-├── requirements.txt     # 後端依賴套件清單
-├── .env.example         # 環境變數範例檔
-├── .gitignore           # 忽略上傳設定
-└── README.md            # 本文件
+├── main.py              # FastAPI 程式進入點
+├── config.py            # 讀取 .env 並產生設定
+├── database.py          # 資料庫連線與 Session 管理
+│
+├── models/              # SQLAlchemy 資料表定義
+│   ├── __init__.py
+│   └── user.py
+│
+├── schemas/             # Pydantic schema：請求/回應格式
+│   ├── __init__.py
+│   └── user.py
+│
+├── crud/                # 資料庫操作邏輯封裝
+│   ├── __init__.py
+│   └── user.py
+│
+├── routes/                 # API 路由定義
+│   ├── __init__.py
+│   └── auth.py
+│
+├── requirements.txt     # 所有 Python 套件清單
+├── .env.example         # .env 範例檔案
+
 ```
 
 ---
