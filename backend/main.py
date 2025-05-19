@@ -17,3 +17,13 @@ app.include_router(auth.router, prefix="/auth")
 
 # 掛載 /users 路由，標註為 Users 分類
 app.include_router(user.router, prefix="/users", tags=["Users"])
+
+# 掛載 /transactions 路由，標註為 Transactions 分類
+from routes import transaction
+
+app.include_router(transaction.router)
+
+# 掛載 /categories 路由，標註為 Categories 分類
+from routes import category
+
+app.include_router(category.router)

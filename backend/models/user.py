@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from database import Base
 from datetime import datetime
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -11,3 +12,5 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     currency_preference = Column(String(10))
     created_at = Column(DateTime, default=datetime.utcnow)
+    # 一對多：一個 user 有很多 transactions
+    transactions = relationship("Transaction", back_populates="user")
