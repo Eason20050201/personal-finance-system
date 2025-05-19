@@ -14,3 +14,6 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     # 一對多：一個 user 有很多 transactions
     transactions = relationship("Transaction", back_populates="user")
+    # 一對多：一個 user 有很多 categories
+    budgets = relationship("Budget", back_populates="user")
+    savings_goals = relationship("SavingsGoal", back_populates="user")

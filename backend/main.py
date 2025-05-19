@@ -27,3 +27,18 @@ app.include_router(transaction.router)
 from routes import category
 
 app.include_router(category.router)
+
+# 掛載 /accounts 路由，標註為 Accounts 分類
+from routes import account
+
+app.include_router(account.router)
+
+# 掛載 /budgets 路由，標註為 Budgets 分類
+from routes import budget
+
+app.include_router(budget.router)
+
+# 掛載 /savings 路由，標註為 Savings 分類
+from routes import savings_goal
+
+app.include_router(savings_goal.router)

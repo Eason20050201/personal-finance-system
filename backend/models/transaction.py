@@ -25,3 +25,4 @@ class Transaction(Base):
 
     user = relationship("User", back_populates="transactions")
     category = relationship("Category", back_populates="transactions")
+    account = relationship("Account", back_populates="transactions")
