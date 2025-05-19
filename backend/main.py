@@ -47,3 +47,7 @@ app.include_router(savings_goal.router)
 from routes import report
 
 app.include_router(report.router)
+
+# 掛載 /recurring 路由，標註為 Recurring Transactions 分類
+from routes import recurring_transaction
+app.include_router(recurring_transaction.router)
