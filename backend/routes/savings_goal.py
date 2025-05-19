@@ -24,3 +24,21 @@ def get_savings_goals_by_user(user_id: int, db: Session = Depends(get_db)):
     if not goals:
         raise HTTPException(status_code=404, detail="No savings goals found for this user")
     return goals
+
+@router.put("/{goal_id}", response_model=goal_schema.SavingsGoalOut)
+def update_savings_goal(
+    goal_id: int,
+    goal_in: goal_schema.SavingsGoalUpdate,
+    db: Session = Depends(get_db),
+):
+    updated = goal_crud.update_savings_goal(db, goal_id, goal_in)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Savings goal not found")
+    return updated
+
+@router.delete("/{goal_id}")
+def delete_savings_goal(goal_id: int, db: Session = Depends(get_db)):
+    deleted = goal_crud.delete_savings_goal(db, goal_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Savings goal not found")
+    return {"detail": "Savings goal deleted"}

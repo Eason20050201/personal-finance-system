@@ -17,3 +17,11 @@ class SavingsGoalOut(SavingsGoalCreate):
 
     class Config:
         orm_mode = True
+
+class SavingsGoalUpdate(BaseModel):
+    name: str | None = None
+    target_amount: condecimal(max_digits=15, decimal_places=2) | None = None
+    current_amount: condecimal(max_digits=15, decimal_places=2) | None = None
+    target_date: date | None = None
+    note: str | None = None
+

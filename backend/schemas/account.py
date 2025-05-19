@@ -16,3 +16,10 @@ class AccountOut(AccountCreate):
 
     class Config:
         orm_mode = True
+
+# ➕ 更新帳戶輸入格式
+class AccountUpdate(BaseModel):
+    account_name: str | None = None
+    account_type: str | None = None
+    currency: str | None = None
+    balance: condecimal(max_digits=15, decimal_places=2) | None = None

@@ -17,3 +17,7 @@ class CategoryOut(CategoryCreate):
 
     class Config:
         orm_mode = True
+
+class CategoryUpdate(BaseModel):
+    name: str | None = None
+    type: CategoryType | None = None
