@@ -42,3 +42,8 @@ app.include_router(budget.router)
 from routes import savings_goal
 
 app.include_router(savings_goal.router)
+
+# 掛載 /reports 路由，標註為 Reports 分類
+from routes import report
+
+app.include_router(report.router)
