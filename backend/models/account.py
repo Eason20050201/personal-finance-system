@@ -14,5 +14,5 @@ class Account(Base):
     balance = Column(DECIMAL(15, 2), default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # 🔁 關聯：多筆交易來自一個帳戶
-    transactions = relationship("Transaction", back_populates="account")
+    # user = relationship("User", back_populates="account")
+    # transactions = relationship("Transaction", back_populates="account")

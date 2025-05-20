@@ -10,5 +10,6 @@ class Category(Base):
     name = Column(String(100), nullable=False)
     type = Column(Enum("income", "expense", name="category_type"), nullable=False)
 
-    transactions = relationship("Transaction", back_populates="category")
-    budgets = relationship("Budget", back_populates="category")
+    # user = relationship("User", back_populates="category")
+    # transactions = relationship("Transaction", back_populates="category")
+    # budgets = relationship("Budget", back_populates="category")

@@ -15,5 +15,5 @@ class Budget(Base):
     end_date = Column(Date)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    user = relationship("User", back_populates="budgets")
-    category = relationship("Category", back_populates="budgets")
+    # user = relationship("User", back_populates="budgets")
+    # category = relationship("Category", back_populates="budgets")

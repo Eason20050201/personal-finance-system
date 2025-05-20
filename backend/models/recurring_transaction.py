@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Date, DECIMAL, Text
 from sqlalchemy.orm import relationship
 from database import Base
 
+from models.user import User
+
 class RecurringTransaction(Base):
     __tablename__ = "recurring_transactions"
 
@@ -18,6 +20,6 @@ class RecurringTransaction(Base):
     next_occurrence = Column(Date, nullable=False)
 
     # Optional relationships
-    user = relationship("User")
-    account = relationship("Account")
-    category = relationship("Category")
+    # user = relationship("User", back_populates="recurring_transactions")
+    # account = relationship("Account", back_populates="recurring_transactions")
+    # category = relationship("Category", back_populates="recurring_transactions")

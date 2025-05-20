@@ -12,8 +12,10 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     currency_preference = Column(String(10))
     created_at = Column(DateTime, default=datetime.utcnow)
-    # 一對多：一個 user 有很多 transactions
-    transactions = relationship("Transaction", back_populates="user")
-    # 一對多：一個 user 有很多 categories
-    budgets = relationship("Budget", back_populates="user")
-    savings_goals = relationship("SavingsGoal", back_populates="user")
+
+    # accounts = relationship("Account", back_populates="user")
+    # categories = relationship("Category", back_populates="user")
+    # budgets = relationship("Budget", back_populates="user")
+    # transactions = relationship("Transaction", back_populates="user")
+    # recurring_transactions = relationship("RecurringTransaction", back_populates="user")
+    # savings_goals = relationship("SavingsGoal", back_populates="user")

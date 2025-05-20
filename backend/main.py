@@ -51,3 +51,19 @@ app.include_router(report.router)
 # 掛載 /recurring 路由，標註為 Recurring Transactions 分類
 from routes import recurring_transaction
 app.include_router(recurring_transaction.router)
+
+# uvicorn 一啟動，每天凌晨 3 點就會自動執行 recurring 處理。
+from apscheduler.schedulers.background import BackgroundScheduler
+from services.recurring_processor import process_due_recurring_transactions
+from database import SessionLocal
+
+def run_recurring_job():
+    db = SessionLocal()
+    try:
+        process_due_recurring_transactions(db)
+    finally:
+        db.close()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(run_recurring_job, "cron", hour=3, minute=0)
+scheduler.start()
