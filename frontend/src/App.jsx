@@ -56,8 +56,7 @@ function App() {
       <Register onRegisterSuccess={() => setShowRegister(false)} />
     ) : !isLoggedIn ? (
       <>
-        <Login onLogin={handleLogin} />
-        <button onClick={() => setShowRegister(true)}>沒有帳號？註冊</button>
+      <Login onLogin={handleLogin} onShowRegister={() => setShowRegister(true)} />
       </>
     ) : (
       <MainApp onLogout={handleLogout} />

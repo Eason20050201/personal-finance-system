@@ -6,21 +6,26 @@
 }
 
 body {
+  margin:0;
+  min-height:100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: #f5f5f5;
+  font-family:'Arial',sans-serif;
 }
 
 /* 登入頁面樣式 */
 .login-container {
-  width: 300%;
+  width: 100%;
+  max-width:420px;           
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background-color: #fff;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
   padding: 2rem;
 }
 
@@ -63,23 +68,15 @@ body {
   margin-top: 1rem;
 }
 
-.google-login {
+.register-btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: #4285F4;
+  background-color: #4c6aaf;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.google-login img {
-  width: 20px;
-  margin-right: 10px;
+  margin-top: 1rem;
 }
 
 .login-title {
@@ -89,11 +86,14 @@ body {
 
 /* 主頁面樣式 */
 .main-container {
-  width: 60%;
+  width: 100%;
+  max-width:1200px; 
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: #fff;
   padding: 1rem;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
   overflow-y: auto;
 }
 
