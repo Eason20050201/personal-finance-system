@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DECIMAL, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
+from utils.date_utils import now_tw
 
 class Account(Base):
     __tablename__ = "accounts"
@@ -12,7 +13,7 @@ class Account(Base):
     account_type = Column(String(20), nullable=False)
     currency = Column(String(10), default="TWD")
     balance = Column(DECIMAL(15, 2), default=0)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
+    created_at = Column(DateTime, default=now_tw)
+    
     # user = relationship("User", back_populates="account")
     # transactions = relationship("Transaction", back_populates="account")

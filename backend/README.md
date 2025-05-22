@@ -41,12 +41,30 @@ source venv/bin/activate  # Windows 請使用 venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+## 📋 資料庫初始化與創建
+
+```bash
+mysql -u root -p
+CREATE DATABASE finance;
+exit
+
+mysql -u root -p finance < ../sql/DDL.sql
+mysql -u root -p finance < ../sql/Relations.sql
+```
+
+---
+
 ### 4️⃣ 設定環境變數 `.env`
 
 請參考 `.env.example`，複製一份 `.env`，並填入你的資料庫資訊：
 
 ```env
-DB_URL=mysql+pymysql://root:你的密碼@localhost/finance_db
+# .env.example
+DB_USER=root
+DB_PASSWORD=[你的密碼]
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=[你的資料庫名稱]
 ```
 
 **注意：** `.env` 請勿上傳到 GitHub，已在 `.gitignore` 中排除。
@@ -63,64 +81,79 @@ Swagger API 文件查看：[http://localhost:8000/docs](http://localhost:8000/do
 
 ---
 
-## 🧹 注意事項
-
-- 請確保本地有正確安裝 MySQL，並建立好 `finance_db` 資料庫。
-- 請匯入 `sql/DDL.sql` 與 `sql/Relations.sql` 初始化資料表與測資。
-- `venv/`、`.env` 已被排除在 Git 版本控制之外。
-
----
-
-## 📋 資料庫初始化指令範例
-
-```bash
-mysql -u root -p
-CREATE DATABASE finance_db;
-exit
-
-mysql -u root -p finance_db < ../sql/DDL.sql
-mysql -u root -p finance_db < ../sql/Relations.sql
-```
-
----
-
 ## 📦 檔案結構簡述
 
 ```plaintext
-backend/
-├── main.py              # FastAPI 程式進入點
-├── config.py            # 讀取 .env 並產生設定
-├── database.py          # 資料庫連線與 Session 管理
-│
-├── models/              # SQLAlchemy 資料表定義
+📁 backend/
+├── 📁 crud/
 │   ├── __init__.py
+│   ├── account.py
+│   ├── budget.py
+│   ├── category.py
+│   ├── recurring_transaction.py
+│   ├── report.py
+│   ├── savings_goal.py
+│   ├── transaction.py
 │   └── user.py
 │
-├── schemas/             # Pydantic schema：請求/回應格式
+├── 📁 models/
 │   ├── __init__.py
+│   ├── account.py
+│   ├── budget.py
+│   ├── category.py
+│   ├── recurring_transaction.py
+│   ├── savings_goal.py
+│   ├── transaction.py
 │   └── user.py
 │
-├── crud/                # 資料庫操作邏輯封裝
+├── 📁 routes/
 │   ├── __init__.py
+│   ├── account.py
+│   ├── auth.py
+│   ├── budget.py
+│   ├── category.py
+│   ├── recurring_transaction.py
+│   ├── report.py
+│   ├── savings_goal.py
+│   ├── transaction.py
 │   └── user.py
 │
-├── routes/                 # API 路由定義
+├── 📁 schemas/
 │   ├── __init__.py
-│   └── auth.py
+│   ├── account.py
+│   ├── budget.py
+│   ├── category.py
+│   ├── recurring_transaction.py
+│   ├── report.py
+│   ├── savings_goal.py
+│   ├── transaction.py
+│   └── user.py
 │
-├── requirements.txt     # 所有 Python 套件清單
-├── .env.example         # .env 範例檔案
-
+├── 📁 scripts/
+│   ├── __init__.py
+│   └── run_daily_tasks.py
+│
+├── 📁 services/
+│   ├── __init__.py
+│   └── recurring_processor.py
+│
+├── 📁 utils/
+│   ├── __init__.py
+│   └── date_utils.py
+│
+├── .env # (本地使用，勿上傳)
+├── .env.example
+├── .gitignore
+├── .python-version
+├── config.py
+├── database.py
+├── main.py
+├── README.md
+└── requirements.txt
 ```
 
 ---
 
 ## 🚀 其他說明
-
-未來會陸續增加：
-
-- 資料模型 models/
-- API 路由 routes/
-- Schema 驗證 schemas/
 
 請持續關注專案更新內容 ✨

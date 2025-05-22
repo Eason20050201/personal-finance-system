@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Date, Enum, DECIMAL, DateTim
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
+from utils.date_utils import now_tw
 import enum
 
 class TransactionType(str, enum.Enum):
@@ -20,7 +21,7 @@ class Transaction(Base):
     transaction_date = Column(Date, nullable=False)  
     note = Column(Text)  
     tags = Column(JSON) 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime, default=now_tw)
     recurring_id = Column(Integer)
 
     # user = relationship("User", back_populates="transactions")

@@ -1,5 +1,10 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import calendar
+import pytz
+
+# ✅ 回傳台灣時區的現在時間（datetime）
+def now_tw() -> datetime:
+    return datetime.now(pytz.timezone("Asia/Taipei"))
 
 # ➕ 根據 frequency 字串（daily/weekly/monthly）計算下一次日期
 def get_next_occurrence(current: date, frequency: str) -> date:

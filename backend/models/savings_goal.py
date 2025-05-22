@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DECIMAL, Date, DateTime, Foreign
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from database import Base
+from utils.date_utils import now_tw
 
 class SavingsGoal(Base):
     __tablename__ = "savings_goals"
@@ -13,6 +14,6 @@ class SavingsGoal(Base):
     current_amount = Column(DECIMAL(15, 2), default=0)
     target_date = Column(Date)
     note = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
+    created_at = Column(DateTime, default=now_tw)
+    
     # user = relationship("User", back_populates="savings_goals")

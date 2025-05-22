@@ -6,3 +6,4 @@ from .category import Category
 from .transaction import Transaction
 from .recurring_transaction import RecurringTransaction
 from .savings_goal import SavingsGoal
+from .notification import Notification

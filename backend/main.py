@@ -52,18 +52,29 @@ app.include_router(report.router)
 from routes import recurring_transaction
 app.include_router(recurring_transaction.router)
 
+# 掛載 /notifications 路由，標註為 Notifications 分類
+from routes import notification
+app.include_router(notification.router)
+
 # uvicorn 一啟動，每天凌晨 3 點就會自動執行 recurring 處理。
 from apscheduler.schedulers.background import BackgroundScheduler
 from services.recurring_processor import process_due_recurring_transactions
+from scripts.run_daily_tasks import check_budget_exceed
 from database import SessionLocal
 
-def run_recurring_job():
+def run_daily_jobs():
     db = SessionLocal()
     try:
+        print("[INFO] ⏰ Daily job started")
         process_due_recurring_transactions(db)
+        check_budget_exceed(db)
+        print("[INFO] ✅ Daily job finished")
+    except Exception as e:
+        print(f"[ERROR] Daily job failed: {e}")
     finally:
         db.close()
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(run_recurring_job, "cron", hour=3, minute=0)
+# scheduler.add_job(run_daily_jobs, "cron", hour=3, minute=0)
+scheduler.add_job(run_daily_jobs, "cron", minute='*/1')  # 每分鐘測試一次
 scheduler.start()
