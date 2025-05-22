@@ -15,13 +15,21 @@ INSERT INTO accounts (user_id, account_name, account_type, currency, balance) VA
 INSERT INTO categories (user_id, name, type, color_tag) VALUES
 (1, '食品', 'expense', '#FF0000'),
 (1, '薪水', 'income', '#00AA00'),
-(2, '娛樂', 'expense', '#0000FF');
+(2, '娛樂', 'expense', '#0000FF'),
+(1, '交通', 'expense', '#FFA500');
 
 -- 4. transactions
 INSERT INTO transactions (user_id, account_id, category_id, amount, type, note, transaction_date) VALUES
 (1, 1, 1, 120.00, 'expense', '午餐便當', '2025-04-25'),
 (1, 2, 2, 30000.00, 'income', '四月薪水', '2025-04-20'),
-(2, 3, 3, 50.00, 'expense', 'Netflix 月費', '2025-04-23');
+(2, 3, 3, 50.00, 'expense', 'Netflix 月費', '2025-04-23'),
+(1, 1, 1, 85.00, 'expense', '早餐豆漿', '2025-05-01'),
+(1, 1, 1, 130.00, 'expense', '晚餐拉麵', '2025-05-02'),
+(1, 2, 4, 200.00, 'expense', '捷運加值', '2025-05-03'),
+(1, 2, 4, 180.00, 'expense', '計程車資', '2025-05-04'),
+(1, 1, 1, 95.00, 'expense', '午餐便當', '2025-05-05'),
+(2, 3, 3, 60.00, 'expense', 'Spotify 月費', '2025-04-24'),
+(2, 3, 3, 100.00, 'expense', 'Uber Eats 外送', '2025-04-25');
 
 -- 5. recurring_transactions
 INSERT INTO recurring_transactions (user_id, account_id, category_id, amount, type, note, frequency, start_date, next_occurrence) VALUES
