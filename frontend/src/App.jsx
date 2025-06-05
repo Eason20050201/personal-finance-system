@@ -44,7 +44,7 @@ import Login from './components/Login'
 import MainApp from './components/MainApp'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
 
   const handleLogin = () => setIsLoggedIn(true)
