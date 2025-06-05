@@ -21,8 +21,8 @@ const Login = ({ onLogin, onShowRegister}) => {
 
   return (
     <div className="login-container">
-      <div className="logo">logo</div>
-      <h2 className="login-title">登入介面</h2>
+      <div className="logo">個人理財管理系統</div>
+      <h2 className="login-title">Login</h2>
       <div className="login-form">
         <div className="form-group">
           <label htmlFor="account">account</label>
