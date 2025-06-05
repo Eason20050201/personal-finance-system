@@ -42,6 +42,7 @@ const handleLogin = () => {
 import { useState } from 'react'
 import Login from './components/Login'
 import MainApp from './components/MainApp'
+import Register from './components/Register'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
