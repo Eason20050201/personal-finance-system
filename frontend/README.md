@@ -94,6 +94,14 @@ frontend/
 - `.env` 不要上傳，已在 `.gitignore` 中排除
 - `node_modules/` 也不應上傳，依 npm install 就能自動建立
 - 請確認後端 FastAPI 有啟動在 `localhost:8000`，否則前端無法連線 API
+- 
+```bash
+npm install papaparse
+```
+- 
+```bash
+npm install recharts
+```
 
 ---
 

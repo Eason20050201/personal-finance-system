@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import api from '../api/axios'
 
-const RecordTable = () => {
+const RecordTable = ({ refreshTrigger }) => {
   /*
   const records = [
     { date: '2023-05-01', amount: '+5,000', note: '薪水' },
@@ -21,7 +21,7 @@ const RecordTable = () => {
     }
 
     fetchRecords()
-  }, [])
+  }, [refreshTrigger])
 
   return (
     <div className="section">
@@ -31,7 +31,7 @@ const RecordTable = () => {
           <tr>
             <th>日期</th>
             <th>金額</th>
-            <th>分類</th>
+            <th>類別</th>
             <th>備註</th>
           </tr>
         </thead>
