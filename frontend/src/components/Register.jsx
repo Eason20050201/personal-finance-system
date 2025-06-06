@@ -20,8 +20,13 @@ const Register = ({ onRegisterSuccess }) => {
     try {
       await api.post('/register', { account, password })
       onRegisterSuccess()
-    } catch {
-      setError('註冊失敗，請稍後再試')
+    } catch (err) {
+        console.error('註冊錯誤:', err) 
+        if (err.response && err.response.status === 400) {
+            setError(err.response.data.detail || '帳號已存在')
+        } else {
+            setError('註冊失敗')
+        }
     }
   }
 

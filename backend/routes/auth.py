@@ -5,6 +5,7 @@ from passlib.hash import bcrypt
 from database import get_db
 from models.user import User
 from schemas.user import UserCreate, UserLogin
+from crud import user as crud_user
 
 router = APIRouter()
 
@@ -16,7 +17,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = User(username=user.username, password_hash=hashed_pw)
     db.add(db_user)
     db.commit()
-    return {"message": "註冊成功"}
+    return crud_user.create_user(db, user)
 
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):

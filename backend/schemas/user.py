@@ -9,6 +9,10 @@ class UserCreate(BaseModel):
     password: str
     currency_preference: str
 
+class UserRegister(BaseModel):
+    account: str
+    password: str
+
 # 使用者登入時的輸入格式
 class UserLogin(BaseModel):
     username: str  # 使用者名稱

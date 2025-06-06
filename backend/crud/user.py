@@ -21,5 +21,11 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
+def authenticate_user(db, account: str, password: str):
+    user = db.query(User).filter(User.account == account).first()
+    if user and user.password == password:
+        return user
+    return None
+
 def get_users(db: Session):
     return db.query(User).all()

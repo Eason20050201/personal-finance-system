@@ -63,7 +63,23 @@ frontend/
 │   ├── App.js            # React 主組件
 │   ├── main.js           # 入口點
 │   ├── components/       # 自訂組件
+│   │   ├── AdviceCards.jsx
+│   │   ├── BudgetCards.jsx
+│   │   ├── FinancialChart.jsx
+│   │   ├── Login.jsx
+│   │   ├── MainApp.jsx
+│   │   ├── NavBar.jsx
+│   │   ├── RecordTable.jsx
+│   │   ├── Register.jsx
+│   │   └── SavingsGoals.jsx
 │   └── api/axios.js      # axios 設定（可選）
+├── styles/
+│   └── main.css
+├── App.css
+├── App.jsx
+├── index.css
+├── main.jsx
+├── Register.jsx          # 不確定為何會有這檔案，以及不知道有沒有用到
 ├── .env.example          # 環境變數範例
 ├── .gitignore
 ├── package.json          # 套件定義
