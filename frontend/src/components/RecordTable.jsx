@@ -31,6 +31,7 @@ const RecordTable = () => {
           <tr>
             <th>日期</th>
             <th>金額</th>
+            <th>分類</th>
             <th>備註</th>
           </tr>
         </thead>

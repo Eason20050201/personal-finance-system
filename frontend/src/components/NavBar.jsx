@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-const NavBar = ({onLogout}) => {
-  const [activeTab, setActiveTab] = useState('記錄')
+const NavBar = ({onLogout, onNavigate}) => {
+  const [activeTab, setActiveTab] = useState('定期交易')
 
-  const tabs = ['記錄', '時間/分析', '預測', '儲蓄理財詳情']
+  const tabs = ['定期交易', '提醒與警示', '收支記錄', '預算管理', '財務報表與圖表', '儲蓄目標設定', '個人理財建議']
 
   return (
     <div className="nav-bar">
@@ -11,12 +11,15 @@ const NavBar = ({onLogout}) => {
         <div 
           key={tab}
           className={`nav-item ${activeTab === tab ? 'active' : ''}`}
-          onClick={() => setActiveTab(tab)}
+          onClick={() => {
+            setActiveTab(tab)
+            onNavigate?.(tab)
+          }}
         >
           {tab}
         </div>
       ))}
-      <button onClick={onLogout} style={{ marginLeft: 'auto' }}>登出</button>
+      <button className="logout-btn" onClick={onLogout}>登出</button>
     </div>
   )
 }
