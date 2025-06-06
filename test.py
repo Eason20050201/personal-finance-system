@@ -1,6 +1,5 @@
 import pandas as pd
 
-# 1. 建立真實範例對帳單
 def create_realistic_statement(filename="sample_statement.xlsx"):
     data = {
         '日期': [
@@ -42,9 +41,8 @@ def create_realistic_statement(filename="sample_statement.xlsx"):
     }
     df = pd.DataFrame(data)
     df.to_excel(filename, index=False)
-    print(f"✅ 已建立範例對帳單：{filename}")
+    print(f" 已建立範例對帳單：{filename}")
 
-# 2. 自動分類
 def auto_categorize(df: pd.DataFrame) -> pd.DataFrame:
     def categorize(row):
         item = row['項目']
@@ -69,9 +67,8 @@ def auto_categorize(df: pd.DataFrame) -> pd.DataFrame:
     df['分類'] = df.apply(categorize, axis=1)
     return df
 
-# 3. 手動校對
 def manual_check(df: pd.DataFrame) -> pd.DataFrame:
-    print("\n🖋️ 進入手動校對模式（按 Enter 可跳過）\n")
+    print("\n 進入手動校對模式（按 Enter 可跳過）\n")
     for i, row in df.iterrows():
         print(f"{i+1:02d}. {row['日期']} | {row['項目']} | 金額: {row['金額']} | 建議分類: {row['分類']}")
         new_cat = input("請輸入新的分類（或 Enter 保留）：").strip()
@@ -79,12 +76,10 @@ def manual_check(df: pd.DataFrame) -> pd.DataFrame:
             df.at[i, '分類'] = new_cat
     return df
 
-# 4. 匯出結果
 def export_to_excel(df: pd.DataFrame, output_path: str):
     df.to_excel(output_path, index=False)
-    print(f"\n📤 已匯出分類後對帳單至：{output_path}")
+    print(f"\n 已匯出分類後對帳單至：{output_path}")
 
-# 主流程
 def main():
     input_file = "sample_statement.xlsx"
     output_file = "categorized_statement.xlsx"
