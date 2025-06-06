@@ -1,0 +1,18 @@
+新增使用者須知:
+因為新增EmailStr來驗證 email 格式，但這需要額外安裝一個套件 email-validator。
+
+記得pip install pydantic[email]
+pip freeze > requirements.txt
+
+重要!!!sql的DDL.sql要改
+
+修改紀錄:
+在backend多個檔案裡改了username為name
+新增EmailStr來驗證 email 格式 
+
+
+問題:
+
+login抓不到資料
+可能是因為我把account設置成要用eamail為帳號登錄
+重要!!!sql的DDL.sql要改
