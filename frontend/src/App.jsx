@@ -45,7 +45,7 @@ import MainApp from './components/MainApp'
 import Register from './components/Register'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [showRegister, setShowRegister] = useState(false)
 
   const handleLogin = () => setIsLoggedIn(true)

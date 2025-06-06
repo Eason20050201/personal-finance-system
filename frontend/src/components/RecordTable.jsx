@@ -1,8 +1,27 @@
+import { useEffect, useState } from 'react'
+import api from '../api/axios'
+
 const RecordTable = () => {
+  /*
   const records = [
     { date: '2023-05-01', amount: '+5,000', note: '薪水' },
     { date: '2023-05-02', amount: '-1,200', note: '餐費' }
   ]
+  */
+  const [records, setRecords] = useState([])
+
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const res = await api.get('/transactions')  // 假設你的 API 是這樣命名
+        setRecords(res.data)
+      } catch (err) {
+        console.error('取得資料錯誤', err)
+      }
+    }
+
+    fetchRecords()
+  }, [])
 
   return (
     <div className="section">

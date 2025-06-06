@@ -22,11 +22,6 @@ const MainApp = ({onLogout}) => {
       <SavingsGoals />
       <FinancialCharts />
       <AdviceCards />
-      
-      <div className="section">
-        <h3 className="section-title">網站內容</h3>
-        <p>更多理財資訊與工具...</p>
-      </div>
     </div>
   )
 }
