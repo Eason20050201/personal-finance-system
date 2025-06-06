@@ -6,7 +6,7 @@ export const login = (username, password) =>
 
 // 使用者註冊
 export const register = (name, email, password, currency_preference) =>
-  api.post('/register', {
+  api.post('/auth/register', {  // ← 加上 /auth
     name,
     email,
     password,
