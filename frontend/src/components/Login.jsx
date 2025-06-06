@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext';
+import { login } from '../api/auth'   // ✅ 加這行
+
 
 const Login = ({ onLogin }) => {
   const [account, setAccount] = useState('')
@@ -11,7 +13,7 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await api.post('/login', { account, password })
+      const res = await login(account, password)   // ✅ 改這裡！
       if (res.status === 200) {
         loginUser(res.data); // ✅ 存入全域 user 狀態
         onLogin();           // ✅ 切換進入 MainApp

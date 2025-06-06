@@ -20,7 +20,7 @@ export default function Register({ onRegisterSuccess }) {
       alert('註冊成功，請登入');
       onRegisterSuccess(); // ✅ 切回登入畫面
     } catch (err) {
-      setError('註冊失敗，請確認資料');
+      setError('email已存在，註冊失敗');
       console.error(err);
     }
   };
