@@ -93,8 +93,10 @@ create table savings_goals (
   current_amount decimal(15,2) default 0,
   target_date date,
   note text,
+  created_at datetime default current_timestamp,  -- ✅ 加上這一行
   foreign key (user_id) references users(user_id)
 ) engine=innodb;
+
 
 -- 8. statements
 create table statements (

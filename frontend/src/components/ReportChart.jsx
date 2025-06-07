@@ -18,11 +18,18 @@ export default function ReportChart() {
     if (!user) return; // ✅ 未登入不查詢
     const [year, mon] = targetMonth.split('-');
     const startDate = `${year}-${mon}-01`;
-    const endDate = `${year}-${mon}-31`;
+    const endDate = new Date(year, mon, 0).toISOString().split('T')[0]; // ✅ 該月最後一天
 
-    getCategorySummary(user.user_id, startDate, endDate) // ✅ 改這裡
-      .then((res) => setData(res.data))
-      .catch(() => alert('載入報表失敗'));
+
+  getCategorySummary(user.user_id, startDate, endDate)
+    .then((res) => setData(res.data))
+    .catch((err) => {
+      if (err.response?.status === 404) {
+        setData([]); // ✅ 改成空資料
+      } else {
+        alert('載入報表失敗');
+      }
+    });
   };
 
   useEffect(() => {

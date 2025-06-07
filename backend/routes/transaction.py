@@ -52,3 +52,25 @@ def delete_transaction(transaction_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Transaction not found")
     return {"detail": "Transaction deleted"}
+
+
+
+from typing import List
+from models.transaction import Transaction
+from sqlalchemy.exc import SQLAlchemyError
+
+# 🧾 批量匯入交易資料（例如從 CSV）
+@router.post("/bulk")
+def import_transactions(
+    transactions: List[transaction_schema.TransactionCreate],
+    db: Session = Depends(get_db),
+):
+    try:
+        for transaction in transactions:
+            db_transaction = Transaction(**transaction.dict())
+            db.add(db_transaction)
+        db.commit()
+        return {"msg": "success"}
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"批次匯入失敗：{str(e)}")

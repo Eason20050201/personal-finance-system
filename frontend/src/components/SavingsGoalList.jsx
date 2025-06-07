@@ -8,9 +8,15 @@ export default function SavingsGoalList() {
 
   useEffect(() => {
     if (!user) return;
-    getSavingsGoals(user.user_id)  // ✅ 改這裡
+    getSavingsGoals(user.user_id)
       .then((res) => setGoals(res.data))
-      .catch(() => alert('載入失敗'));
+      .catch((err) => {
+        if (err.response?.status === 404) {
+          setGoals([]); // ✅ 沒有資料就當空清單
+        } else {
+          alert('載入失敗');
+        }
+      });
   }, [user]); // ✅ user 進依賴清單，確保登入後能重新載入
 
   return (

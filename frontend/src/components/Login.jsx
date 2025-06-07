@@ -15,7 +15,9 @@ const Login = ({ onLogin }) => {
     try {
       const res = await login(account, password)   // ✅ 改這裡！
       if (res.status === 200) {
-        loginUser(res.data); // ✅ 存入全域 user 狀態
+        console.log("[DEBUG] 登入 API 回傳：", res.data)
+
+        loginUser(res.data.user);  // ✅ 這樣 user.user_id 就正確存在 context 裡
         onLogin();           // ✅ 切換進入 MainApp
       }
     } catch (err) {

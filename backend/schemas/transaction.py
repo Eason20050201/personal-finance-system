@@ -8,7 +8,7 @@ class TransactionType(str, Enum):
 
 # ➕ 建立交易時的輸入資料格式
 class TransactionCreate(BaseModel):
-    user_id: int
+    
     amount: condecimal(max_digits=15, decimal_places=2)
     type: TransactionType
     transaction_date: date  
@@ -31,7 +31,7 @@ class TransactionUpdate(BaseModel):
     amount: condecimal(max_digits=10, decimal_places=2) | None = None
     type: TransactionType | None = None
     transaction_date: date | None = None
-    description: str | None = None
+    note: str | None = None
     tags: dict | None = None
     account_id: int | None = None
     category_id: int | None = None

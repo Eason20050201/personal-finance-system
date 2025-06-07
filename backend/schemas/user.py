@@ -23,3 +23,7 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+class LoginResponse(BaseModel):
+    message: str
+    user: UserOut
