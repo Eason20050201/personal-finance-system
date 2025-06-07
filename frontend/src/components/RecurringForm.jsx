@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { createRecurring } from '../api/recurring'
 
-const RecurringForm = ({ onSubmit }) => {
+const RecurringForm = ({ user, onSuccess }) => {
   const [form, setForm] = useState({
     amount: '',
     type: 'expense',
@@ -16,9 +17,22 @@ const RecurringForm = ({ onSubmit }) => {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (onSubmit) onSubmit(form)
+    try {
+      const payload = {
+        ...form,
+        user_id: user.user_id,
+        account_id: user.account_id,
+        category_id: user.category_id
+      }
+      await createRecurring(payload)
+      alert('新增成功')
+      if (onSuccess) onSuccess()
+    } catch (err) {
+      alert('新增失敗')
+      console.error(err)
+    }
   }
 
   return (

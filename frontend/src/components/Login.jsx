@@ -1,17 +1,34 @@
 import { useState } from 'react'
 import api from '../api/axios'
 
-const Login = ({ onLogin, onShowRegister}) => {
+// const Login = ({ onLogin, onShowRegister}) => {
+//   const [account, setAccount] = useState('')
+//   const [password, setPassword] = useState('')
+//   const [error, setError] = useState('')
+import { useAuth } from '../AuthContext';
+import { login } from '../api/auth'   // ✅ 加這行
+
+
+const Login = ({ onLogin, onShowRegister }) => {
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const { loginUser } = useAuth(); // ✅ 加這行
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      /*
       const res = await api.post('/login', { account, password })
       if (res.status === 200) {
         onLogin()
+        */
+      const res = await login(account, password)   // ✅ 改這裡！
+      if (res.status === 200) {
+        console.log("[DEBUG] 登入 API 回傳：", res.data)
+
+        loginUser(res.data.user);  // ✅ 這樣 user.user_id 就正確存在 context 裡
+        onLogin();           // ✅ 切換進入 MainApp
       }
     } catch (err) {
       console.error('登入錯誤:', err)  // 使用 err

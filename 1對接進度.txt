@@ -1,0 +1,103 @@
+✅ 帳戶:
+
+frontend/
+└── src/
+    └── api/
+        └── account.js   ← 新增這個檔案
+
+frontend/
+└── src/
+    └── components/
+        └── AccountList.jsx   ← 新增這個檔案
+
+frontend/
+└── src/
+    └── components/
+        └── AccountForm.jsx   ← 新增這個檔案
+
+修改 MainApp.jsx
+在 src/components/MainApp.jsx 中顯示帳戶表單與清單
+
+🔄 交易紀錄:
+
+建立 src/api/transaction.js
+js
+
+建立 TransactionForm.jsx
+放在 src/components/TransactionForm.jsx
+
+建立 TransactionList.jsx
+放在 src/components/TransactionList.jsx
+
+修改 MainApp.jsx
+
+💰 儲蓄目標:
+
+建立 src/api/savings_goal.js
+js
+
+建立 SavingsGoalForm.jsx
+放在 src/components/SavingsGoalForm.jsx
+
+建立 SavingsGoalList.jsx
+放在 src/components/SavingsGoalList.jsx
+
+
+📈 報表:
+
+建立 src/api/report.js
+
+安裝圖表套件（以 Recharts 為例）
+如果你還沒裝，請執行：
+npm install recharts
+
+建立 ReportChart.jsx
+放在 src/components/ReportChart.jsx
+
+📅 定期交易:
+
+建立 src/api/recurring.js
+
+新增 RecurringForm.jsx
+放在 src/components/RecurringForm.jsx
+
+新增 RecurringList.jsx
+放在 src/components/RecurringList.jsx
+
+🔔 通知系統:
+
+建立 src/api/notification.js
+
+建立 NotificationList.jsx
+放在 src/components/NotificationList.jsx
+
+🧍 使用者註冊與完整登錄
+
+建立src/api/auth.js
+
+建立src/AuthContext.jsx
+
+修改大多數.jsx使 使用者id不侷限於1
+
+建立 Register.jsx
+放在 src/components/Register.jsx
+
+🔎 搜尋與過濾交易紀錄
+
+為crud和routes的transaction.py新增東西
+
+新增元件：TransactionFilter.jsx
+路徑：src/components/TransactionFilter.jsx
+
+
+「推薦對接項目」如下：
+模組	models 檔案	功能意義	還可以對接的功能
+✅ 帳戶	account.py	各種錢包、信用卡帳戶等	✔ 已完成（新增 + 查詢）
+🔄 交易紀錄	transaction.py	記帳核心（每筆花/賺的錢）	🔸 對接新增 / 查詢 / 編輯交易
+📅 定期交易	recurring_transaction.py	固定每週/月的收支（如房租）	🔸 對接週期性交易建立 / 列表
+💰 儲蓄目標	savings_goal.py	例如：我想在年底存到 5 萬	🔸 對接建立 / 進度更新 / 查詢
+📊 預算	budget.py	每月分類預算（如飲食 $3000）	🔸 對接新增 / 修改 / 通知用盡
+🧾 分類	category.py	所有交易會歸屬某個分類	🔸 前端可做分類管理（含圖示）
+🔔 通知	notification.py	超出預算、定期交易提醒等	🔸 可接列表 / 已讀狀態切換
+🧍 使用者	user.py	使用者登入資訊	🔸 對接註冊 / 登入 / 登出
+📈 報表	無單獨 model，CRUD 在 report.py	各分類支出總額與比例	🔸 圓餅圖、長條圖報表呈現

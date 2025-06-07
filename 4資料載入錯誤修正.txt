@@ -1,0 +1,27 @@
+新增一些資料以免報錯
+
+INSERT INTO accounts (user_id, account_name, account_type, currency, balance)
+VALUES (4, '現金', 'cash', 'TWD', 1000.00);
+
+
+INSERT INTO transactions (user_id, account_id, category_id, amount, type, transaction_date)
+VALUES (4, 1, 1, 200.00, 'expense', '2025-06-05');
+
+前端顯示「無資料」而非失敗
+前端 API 呼叫若遇到 404 應該解釋成「沒有資料」而非「錯誤」
+
+frontend/src/components/ReportChart.jsx 裡
+getCategorySummary(user.user_id, startDate, endDate) // ✅ 改這裡
+  .then((res) => setData(res.data))
+  .catch(() => alert('載入報表失敗'));
+
+改成：
+getCategorySummary(user.user_id, startDate, endDate)
+  .then((res) => setData(res.data))
+  .catch((err) => {
+    if (err.response?.status === 404) {
+      setData([]); // ✅ 改成空資料
+    } else {
+      alert('載入報表失敗');
+    }
+  });

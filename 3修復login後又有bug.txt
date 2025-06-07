@@ -1,0 +1,23 @@
+問題:
+一堆載入失敗 不知道發生甚麼事
+
+更改內容:
+
+1.修改前端 login API 路徑
+
+frontend/src/api/auth.js中
+export const login = (email, password) =>
+  api.post('/login', { email, password });
+
+改成
+export const login = (email, password) =>
+  api.post('/auth/login', { email, password });
+
+2.引入 auth.js 裡的 login 函式
+frontend/src/components/Login.jsx中
+
+import { login } from '../api/auth'
+
+修改 handleSubmit()
+
+const res = await login(account, password)

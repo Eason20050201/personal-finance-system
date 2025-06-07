@@ -77,6 +77,9 @@ create table budgets (
   period varchar(10),
   start_date date,
   end_date date,
+  notify_interval_days int default 7,
+  last_notified_at datetime default null,
+  created_at datetime default current_timestamp,
   foreign key (user_id) references users(user_id),
   foreign key (category_id) references categories(category_id)
 ) engine=innodb;
@@ -90,8 +93,10 @@ create table savings_goals (
   current_amount decimal(15,2) default 0,
   target_date date,
   note text,
+  created_at datetime default current_timestamp,  -- ✅ 加上這一行
   foreign key (user_id) references users(user_id)
 ) engine=innodb;
+
 
 -- 8. statements
 create table statements (

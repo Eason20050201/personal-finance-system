@@ -42,15 +42,20 @@ const handleLogin = () => {
 import { useState } from 'react'
 import Login from './components/Login'
 import MainApp from './components/MainApp'
+import { useAuth } from './AuthContext'; // ✅ 加這行
 import Register from './components/Register'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
+  const { logoutUser } = useAuth(); // ✅ 取出 logout 函數
 
-  const handleLogin = () => setIsLoggedIn(true)
-  const handleLogout = () => setIsLoggedIn(false)
-
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleLogout = () => {
+    logoutUser();          // ✅ 清掉 user
+    setIsLoggedIn(false);  // ✅ 切回登入畫面
+  };
+  
   return (
     <div className="app">
       {showRegister ? (
