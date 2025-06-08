@@ -40,32 +40,29 @@ const MainApp = ({onLogout}) => {
     }
   }
 
-  const handleCSVUpload = (e) => {
+  const handleCSVUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results) => {
-        try {
-          const transactions = results.data.map(row => ({
-            date: row['日期'],
-            amount: parseFloat(row['金額']),
-            note: row['備註'],
-            category: row['分類'] || '', // 根據你的 schema 調整
-            user_id: 1 // 如果後端需要 user_id，可根據實際登入使用者傳遞
-          }))
-          await api.post('/transactions/bulk', { transactions })
-          alert('匯入成功')
-        } catch (error) {
-          console.error('匯入失敗:', error)
-          alert('匯入失敗')
-        }
-      }
-    })
+    const formData = new FormData()
+    formData.append('file', file)
+
+    for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value)
   }
 
+    try {
+      await api.post('/transactions/bulk-csv', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      alert('匯入成功')
+    } catch (error) {
+      console.error('匯入失敗:', error)
+      alert('匯入失敗')
+    }
+  }
   return (
     <div className="main-container">
       <NavBar onLogout={onLogout} onNavigate={handleScrollTo} />
