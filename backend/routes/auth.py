@@ -48,3 +48,19 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="建立預設帳戶失敗")
 
     return {"message": "註冊成功"}
+
+from schemas.user import UserOut
+from schemas.user import UserLogin, LoginResponse
+
+
+@router.post("/login", response_model=LoginResponse)
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter_by(email=user.email).first()
+
+    if not db_user or not bcrypt.verify(user.password, db_user.password_hash):
+        raise HTTPException(status_code=400, detail="帳號或密碼錯誤")
+
+    return {
+        "message": "登入成功",
+        "user": db_user
+    }
