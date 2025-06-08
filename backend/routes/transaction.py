@@ -75,7 +75,7 @@ from io import StringIO
 from models import Transaction  # 假設你有這個模型
 from database import get_db
 
-router = APIRouter()
+# router = APIRouter()
 
 @router.post("/bulk-csv")
 def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Depends(get_db)):

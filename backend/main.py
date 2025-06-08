@@ -20,7 +20,7 @@ from routes import auth, user, transaction, category, account, budget, savings_g
 # ✅ 接著掛載路由
 app.include_router(auth.router, prefix="/auth")
 app.include_router(user.router, prefix="/users", tags=["Users"])
-app.include_router(transaction.router,prefix="/transactions")
+app.include_router(transaction.router)
 app.include_router(category.router)
 app.include_router(account.router)
 app.include_router(budget.router)
