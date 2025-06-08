@@ -1,27 +1,29 @@
 import { useEffect, useState } from 'react'
 import api from '../api/axios'
+import { useAuth } from '../AuthContext'
 
 const RecordTable = ({ refreshTrigger }) => {
-  /*
-  const records = [
-    { date: '2023-05-01', amount: '+5,000', note: '薪水' },
-    { date: '2023-05-02', amount: '-1,200', note: '餐費' }
-  ]
-  */
   const [records, setRecords] = useState([])
+  const { user } = useAuth()
 
   useEffect(() => {
     const fetchRecords = async () => {
+      if (!user?.user_id) {
+        console.warn("⚠️ 尚未登入或 user_id 不存在")
+        return
+      }
+
       try {
-        const res = await api.get('/transactions')  // 假設你的 API 是這樣命名
+        const res = await api.get(`/transactions/${user.user_id}`)
+        console.log("✅ 抓到的交易資料：", res.data)
         setRecords(res.data)
       } catch (err) {
-        console.error('取得資料錯誤', err)
+        console.error('❌ 取得資料錯誤', err)
       }
     }
 
     fetchRecords()
-  }, [refreshTrigger])
+  }, [refreshTrigger, user])
 
   return (
     <div className="section">
@@ -38,8 +40,9 @@ const RecordTable = ({ refreshTrigger }) => {
         <tbody>
           {records.map((record, index) => (
             <tr key={index}>
-              <td>{record.date}</td>
+              <td>{record.transaction_date}</td>
               <td>{record.amount}</td>
+              <td>{record.category?.name}</td>
               <td>{record.note}</td>
             </tr>
           ))}

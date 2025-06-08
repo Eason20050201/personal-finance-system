@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
-from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File
 from sqlalchemy.orm import Session
+from typing import Optional, List
+import csv
+from io import StringIO
+
 from database import get_db
+from models import Transaction
 import crud.transaction as transaction_crud
 import schemas.transaction as transaction_schema
+from utils.categorize import categorize_transaction, get_or_create_category_id
 
 router = APIRouter(
-    prefix="/transactions",
-    tags=["transactions"],
+    
 )
 
 # ➕ 新增交易
@@ -78,35 +82,40 @@ from database import get_db
 router = APIRouter()
 
 @router.post("/bulk-csv")
-def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Depends(get_db)):
+def import_transactions_from_csv(
+    user_id: str = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
     try:
+        user_id = int(user_id)
         content = file.file.read().decode("utf-8")
-        print(f"收到檔案：{file.filename}")
         reader = csv.DictReader(StringIO(content))
-
         imported_data = []
 
         for i, row in enumerate(reader, start=1):
             try:
                 amount = float(row["金額"])
                 transaction_type = "income" if amount > 0 else "expense"
+                category_name = categorize_transaction(row["項目"])
+                category_id = get_or_create_category_id(category_name, user_id, db)
+
                 db_transaction = Transaction(
-                    user_id=1,  # 先寫死，日後從 token 抓
+                    user_id=user_id,
                     transaction_date=row["日期"],
-                    amount=abs(amount),  # 存入資料統一為正值
+                    amount=abs(amount),
                     note=row.get("備註", ""),
                     type=transaction_type,
                     account_id=1,
-                    category_id=1,
+                    category_id=category_id
                 )
                 db.add(db_transaction)
                 imported_data.append({
                     "transaction_date": row["日期"],
-                    "amount": float(row["金額"]),
-                    "note": row.get("備註", None),
-                    "type": "expense",
-                    "account_id": 1,
-                    "category_id": 1
+                    "amount": abs(amount),
+                    "note": row.get("備註", ""),
+                    "type": transaction_type,
+                    "category_id": category_id
                 })
             except Exception as row_err:
                 raise HTTPException(
@@ -116,16 +125,33 @@ def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Dep
 
         db.commit()
         return {
-            "msg": "CSV 匯入成功",
+            "msg": "CSV 匯入成功，自動分類完成",
             "data": imported_data
         }
 
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"CSV 匯入失敗：{str(e)}")
+from schemas import transaction as transaction_schema
 
-@router.get("/", response_model=list[transaction_schema.TransactionOut])
-def get_all_transactions(db: Session = Depends(get_db)):
-    transactions = db.query(Transaction).all()
-    return transactions
+@router.get("/{user_id}")
+def get_transactions_by_user(user_id: int, db: Session = Depends(get_db)):
+    print(f"✅ 收到 user_id: {user_id}")
+    
+    transactions = db.query(Transaction).filter(Transaction.user_id == user_id).all()
+    
+    result = []
+    for t in transactions:
+        result.append({
+            "id": t.transaction_id,
+            "transaction_date": t.transaction_date,
+            "amount": t.amount,
+            "note": t.note,
+            "type": t.type,
+            "category": {
+                "id": t.category.category_id,
+                "name": t.category.name
+            } if t.category else None,
+        })
 
+    return result
