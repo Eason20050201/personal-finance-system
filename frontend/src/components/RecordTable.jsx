@@ -14,7 +14,7 @@ const RecordTable = ({ refreshTrigger }) => {
       }
 
       try {
-        const res = await api.get(`/transactions/${user.user_id}`)
+        const res = await api.get(`/transactions/all/${user.user_id}`)
         console.log("✅ 抓到的交易資料：", res.data)
         setRecords(res.data)
       } catch (err) {
