@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext'
 
-const RecurringTable = () => {
+const RecurringTable = ({ onEdit }) => {
   const [records, setRecords] = useState([])
   const { user } = useAuth()
 
@@ -44,6 +44,9 @@ const RecurringTable = () => {
               <td>{item.end_date || '無'}</td>
               <td>{item.next_occurrence}</td>
               <td>{item.note}</td>
+              <td>
+                <button onClick={() => onEdit(item)}>編輯</button>
+              </td>
             </tr>
           ))}
         </tbody>

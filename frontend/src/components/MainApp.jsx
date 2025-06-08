@@ -28,7 +28,12 @@ const MainApp = ({onLogout}) => {
   const [refreshKey, setRefreshKey] = useState(0)
   const [recurringRefreshKey, setRecurringRefreshKey] = useState(0)
   const [showRecurringModal, setShowRecurringModal] = useState(false)
+  const [editingRecurring, setEditingRecurring] = useState(null)
 
+  const handleEdit = (item) => {
+    setEditingRecurring(item);
+    setShowRecurringModal(true);
+  };
 
   const handleRecordAdded = () => setRefreshKey(prev => prev + 1)
 
@@ -96,14 +101,18 @@ const MainApp = ({onLogout}) => {
           <button className="action-btn" onClick={() => setShowRecurringModal(true)}>+ 定期交易</button>
         </div>
 
+        <RecurringTable key={recurringRefreshKey} onEdit={handleEdit}/>
+
         {showRecurringModal && (
           <RecurringModal
-            onClose={() => setShowRecurringModal(false)}
+            onClose={() => {
+              setShowRecurringModal(false)
+              setEditingRecurring(null)
+            }}
             onRecurringAdded={handleRecurringAdded}
+            editingData={editingRecurring} 
           />
         )}
-
-        <RecurringTable key={recurringRefreshKey} />
       </div>
 
       
