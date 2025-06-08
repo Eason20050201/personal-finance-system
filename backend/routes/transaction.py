@@ -68,17 +68,56 @@ from models.transaction import Transaction
 from sqlalchemy.exc import SQLAlchemyError
 
 # 🧾 批量匯入交易資料（例如從 CSV）
-@router.post("/bulk")
-def import_transactions(
-    transactions: List[transaction_schema.TransactionCreate],
-    db: Session = Depends(get_db),
-):
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from sqlalchemy.orm import Session
+import csv
+from io import StringIO
+from models import Transaction  # 假設你有這個模型
+from database import get_db
+
+router = APIRouter()
+
+@router.post("/bulk-csv")
+def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
-        for transaction in transactions:
-            db_transaction = Transaction(**transaction.dict())
-            db.add(db_transaction)
+        content = file.file.read().decode("utf-8")
+        print(f"收到檔案：{file.filename}")
+        reader = csv.DictReader(StringIO(content))
+
+        imported_data = []
+
+        for i, row in enumerate(reader, start=1):
+            try:
+                db_transaction = Transaction(
+                    user_id=1,  # 假設為 1，可改為從 token 取得
+                    transaction_date=row["日期"],
+                    amount=float(row["金額"]),
+                    note=row.get("備註", None),
+                    type="expense",  # 預設所有 CSV 交易都是支出
+                    account_id=1,
+                    category_id=1,
+                )
+                db.add(db_transaction)
+                imported_data.append({
+                    "transaction_date": row["日期"],
+                    "amount": float(row["金額"]),
+                    "note": row.get("備註", None),
+                    "type": "expense",
+                    "account_id": 1,
+                    "category_id": 1
+                })
+            except Exception as row_err:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"第 {i} 筆資料格式錯誤：{row_err}"
+                )
+
         db.commit()
-        return {"msg": "success"}
-    except SQLAlchemyError as e:
+        return {
+            "msg": "CSV 匯入成功",
+            "data": imported_data
+        }
+
+    except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"批次匯入失敗：{str(e)}")
+        raise HTTPException(status_code=500, detail=f"CSV 匯入失敗：{str(e)}")
