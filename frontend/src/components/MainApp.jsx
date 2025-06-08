@@ -11,6 +11,8 @@ import Papa from 'papaparse'
 import api from '../api/axios'
 import AddRecordModal from './AddRecordModal'
 import RecurringTable from './RecurringTable'
+import RecurringModal from './RecurringModal'
+
 
 
 const MainApp = ({onLogout}) => {
@@ -25,6 +27,8 @@ const MainApp = ({onLogout}) => {
   const [showModal, setShowModal] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const [recurringRefreshKey, setRecurringRefreshKey] = useState(0)
+  const [showRecurringModal, setShowRecurringModal] = useState(false)
+
 
   const handleRecordAdded = () => setRefreshKey(prev => prev + 1)
 
@@ -83,10 +87,25 @@ const MainApp = ({onLogout}) => {
     <div className="main-container">
       <NavBar onLogout={onLogout} onNavigate={handleScrollTo} />
 
-      <div ref={recurrRef}>
+      {/* <div ref={recurrRef}>
         <RecurringForm onSuccess={handleRecurringAdded} onSubmit={(data) => console.log('定期交易提交:', data)} />
         <RecurringTable key={recurringRefreshKey}/>
+      </div> */}
+      <div ref={recurrRef}>
+        <div className="quick-actions">
+          <button className="action-btn" onClick={() => setShowRecurringModal(true)}>+ 定期交易</button>
+        </div>
+
+        {showRecurringModal && (
+          <RecurringModal
+            onClose={() => setShowRecurringModal(false)}
+            onRecurringAdded={handleRecurringAdded}
+          />
+        )}
+
+        <RecurringTable key={recurringRefreshKey} />
       </div>
+
       
       <div className="quick-actions">
         <button className="action-btn" onClick={() => setShowModal(true)}>+ 收支記錄</button>
