@@ -15,6 +15,7 @@ def create_savings_goal(
     goal_in: goal_schema.SavingsGoalCreate,
     db: Session = Depends(get_db),
 ):
+    print("✅ 收到儲蓄目標請求：", goal_in.dict())
     return goal_crud.create_savings_goal(db, goal_in)
 
 # 📥 查詢某使用者的儲蓄目標
