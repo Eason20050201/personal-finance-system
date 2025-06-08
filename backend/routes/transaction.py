@@ -11,7 +11,8 @@ import schemas.transaction as transaction_schema
 from utils.categorize import categorize_transaction, get_or_create_category_id
 
 router = APIRouter(
-    
+    prefix="/transactions",
+    tags=["transactions"],
 )
 
 # ➕ 新增交易
@@ -79,7 +80,7 @@ from io import StringIO
 from models import Transaction  # 假設你有這個模型
 from database import get_db
 
-router = APIRouter()
+#router = APIRouter()
 
 @router.post("/bulk-csv")
 def import_transactions_from_csv(
@@ -134,7 +135,7 @@ def import_transactions_from_csv(
         raise HTTPException(status_code=500, detail=f"CSV 匯入失敗：{str(e)}")
 from schemas import transaction as transaction_schema
 
-@router.get("/{user_id}")
+@router.get("/all/{user_id}")
 def get_transactions_by_user(user_id: int, db: Session = Depends(get_db)):
     print(f"✅ 收到 user_id: {user_id}")
     
