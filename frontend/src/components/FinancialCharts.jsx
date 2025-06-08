@@ -1,3 +1,6 @@
+import { getCategorySummary } from '../api/report'
+import { useContext } from 'react'
+import { useAuth } from '../AuthContext'
 import { useEffect, useState } from 'react'
 import {
   PieChart, Pie, Cell,
@@ -13,17 +16,48 @@ const FinancialCharts = () => {
   const [type, setType] = useState('pie')
   const [period, setPeriod] = useState('daily')
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await api.get(`/transactions?period=${period}`)
+  //       setData(res.data)
+  //     } catch (err) {
+  //       console.error('讀取資料錯誤:', err)
+  //     }
+  //   }
+  //   fetchData()
+  // }, [period])
+
+  const { user } = useAuth()
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get(`/transactions?period=${period}`)
-        setData(res.data)
+        let res
+        if (type === 'pie') {
+          const today = new Date()
+          const end = today.toISOString().split('T')[0]
+          const start = new Date(today.setMonth(today.getMonth() - 1)).toISOString().split('T')[0]
+
+          res = await getCategorySummary(user.user_id, start, end)
+          // 從報表 API 回傳的資料格式：
+          // [{ category_name: '食品', total: '250.0', percentage: '100.00' }]
+          const formatted = res.data.map(item => ({
+            type: item.category_name,
+            amount: parseFloat(item.total)
+          }))
+          setData(formatted)
+        } else {
+          // 暫時保留原本 bar/line 使用的交易資料 API
+          res = await api.get(`/transactions?period=${period}`)
+          setData(res.data)
+        }
       } catch (err) {
         console.error('讀取資料錯誤:', err)
       }
     }
-    fetchData()
-  }, [period])
+    if (user) fetchData()
+  }, [type, period, user])
 
   return (
     <div className="section">
