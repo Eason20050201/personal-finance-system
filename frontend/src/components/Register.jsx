@@ -27,7 +27,7 @@ const Register = ({ onRegisterSuccess }) => {
       return
     }
     try {
-      await api.post('/register', form)
+      await api.post('/auth/register', form)
       alert('註冊成功，請登入')
       onRegisterSuccess()
     } catch (err) {
@@ -80,4 +80,3 @@ const Register = ({ onRegisterSuccess }) => {
 }
 
 export default Register
-

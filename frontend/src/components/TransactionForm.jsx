@@ -17,8 +17,15 @@ export default function TransactionForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const payload = {
+      ...form,
+      amount: form.amount.toString(),
+      end_date: form.end_date || null,
+    }
+
     try {
-      await createTransaction(form);
+      await createTransaction(payload);
       alert('新增交易成功');
     } catch (err) {
       alert('新增失敗');

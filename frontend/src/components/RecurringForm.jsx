@@ -1,37 +1,52 @@
 import { useState } from 'react'
 import { createRecurring } from '../api/recurring'
+import { useAuth } from '../AuthContext';
 
-const RecurringForm = ({ user, onSuccess }) => {
+const RecurringForm = ({ onSuccess }) => {
+  const { user } = useAuth()  // ✅ hook 正確呼叫位置
+
+  console.log("✅ RecurringForm user:", user)
+
   const [form, setForm] = useState({
+    account_id: 1,       // ✅ 暫時用測試值
+    category_id: 2,
     amount: '',
     type: 'expense',
     frequency: 'monthly',
     start_date: '',
     end_date: '',
     next_occurrence: '',
-    note: ''
+    note: '',
   })
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+
+    const payload = {
+      ...form,
+      amount: form.amount.toString(),
+      end_date: form.end_date || null,
+      user_id: user.user_id,
+    }
+
     try {
-      const payload = {
-        ...form,
-        user_id: user.user_id,
-        account_id: user.account_id,
-        category_id: user.category_id
-      }
       await createRecurring(payload)
       alert('新增成功')
       if (onSuccess) onSuccess()
     } catch (err) {
       alert('新增失敗')
-      console.error(err)
+      if (err.response) {
+        console.error('伺服器回應：', err.response.data)
+        console.error('❌ 新增定期交易錯誤:', err)
+      if (err.response) {
+        console.error('⚠️ 錯誤詳情：', JSON.stringify(err.response.data, null, 2))
+      }
+      }
     }
   }
 
