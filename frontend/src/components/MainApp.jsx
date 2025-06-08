@@ -47,17 +47,16 @@ const MainApp = ({onLogout}) => {
     const formData = new FormData()
     formData.append('file', file)
 
-    for (let [key, value] of formData.entries()) {
-    console.log(`${key}:`, value)
-  }
-
-    try {
-      await api.post('/transactions/bulk-csv', formData, {
+     try {
+      const response = await api.post('/transactions/bulk-csv', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
+
+      console.log('✅ 匯入成功，後端回傳:', response.data)
       alert('匯入成功')
+      setRefreshKey(prev => prev + 1)
     } catch (error) {
       console.error('匯入失敗:', error)
       alert('匯入失敗')
