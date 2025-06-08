@@ -25,7 +25,7 @@ export default function TransactionList() {
       <ul>
         {transactions.map(tx => (
           <li key={tx.transaction_id}>
-            {tx.transaction_date} - {tx.type} - ${tx.amount} ({tx.note})
+            {new Date(tx.transaction_date).toLocaleDateString()} - {tx.type} - ${tx.amount} ({tx.note})
           </li>
         ))}
       </ul>
