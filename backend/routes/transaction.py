@@ -90,7 +90,6 @@ def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Dep
             try:
                 amount = float(row["金額"])
                 transaction_type = "income" if amount > 0 else "expense"
-
                 db_transaction = Transaction(
                     user_id=1,  # 先寫死，日後從 token 抓
                     transaction_date=row["日期"],
@@ -101,14 +100,13 @@ def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Dep
                     category_id=1,
                 )
                 db.add(db_transaction)
-
                 imported_data.append({
                     "transaction_date": row["日期"],
-                    "amount": abs(amount),
-                    "note": row.get("備註", ""),
-                    "type": transaction_type,
+                    "amount": float(row["金額"]),
+                    "note": row.get("備註", None),
+                    "type": "expense",
                     "account_id": 1,
-                    "category_id": 1,
+                    "category_id": 1
                 })
             except Exception as row_err:
                 raise HTTPException(
@@ -130,3 +128,4 @@ def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Dep
 def get_all_transactions(db: Session = Depends(get_db)):
     transactions = db.query(Transaction).all()
     return transactions
+
