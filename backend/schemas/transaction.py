@@ -1,49 +1,39 @@
 from pydantic import BaseModel, condecimal
 from datetime import date, datetime
 from enum import Enum
-from typing import Optional
-from schemas.category import CategoryOut  # ⬅️ 確保這行有匯入正確
 
 class TransactionType(str, Enum):
     income = "income"
     expense = "expense"
 
+# ➕ 建立交易時的輸入資料格式
 class TransactionCreate(BaseModel):
+#    user_id: int
+    
     amount: condecimal(max_digits=15, decimal_places=2)
     type: TransactionType
     transaction_date: date  
-    note: Optional[str] = None
-    tags: Optional[dict] = None
-    account_id: Optional[int] = None
-    category_id: Optional[int] = None
-    recurring_id: Optional[int] = None
+    note: str | None = None
+    tags: dict | None = None
+    account_id: int | None = None
+    category_id: int | None = None
+    recurring_id: int | None = None
 
+# 📤 查詢/回傳用的交易資料格式（含交易 ID 與建立時間）
 class TransactionOut(TransactionCreate):
     transaction_id: int
     created_at: datetime
-    category: Optional[CategoryOut] = None  # ✅ 加這行
 
     class Config:
         orm_mode = True
 
+# ➕ 更新交易時的輸入資料格式
 class TransactionUpdate(BaseModel):
-    amount: Optional[condecimal(max_digits=10, decimal_places=2)] = None
-    type: Optional[TransactionType] = None
-    transaction_date: Optional[date] = None
-    note: Optional[str] = None
-    tags: Optional[dict] = None
-    account_id: Optional[int] = None
-    category_id: Optional[int] = None
-    recurring_id: Optional[int] = None
-
-# schemas/category.py
-
-from pydantic import BaseModel
-
-class CategoryOut(BaseModel):
-    category_id: int
-    name: str
-    type: str  # "income" or "expense"
-
-    class Config:
-        orm_mode = True
+    amount: condecimal(max_digits=10, decimal_places=2) | None = None
+    type: TransactionType | None = None
+    transaction_date: date | None = None
+    note: str | None = None
+    tags: dict | None = None
+    account_id: int | None = None
+    category_id: int | None = None
+    recurring_id: int | None = None
