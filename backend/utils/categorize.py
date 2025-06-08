@@ -19,7 +19,7 @@ def categorize_transaction(item: str) -> str:
     elif any(kw in item for kw in ['補習', '學費', '教材', '書店']):
         return '教育'
     else:
-        return '其他'
+        return '其它'
 
 def get_or_create_category_id(category_name: str, user_id: int, db) -> int:
     category = db.query(Category).filter_by(user_id=user_id, name=category_name).first()

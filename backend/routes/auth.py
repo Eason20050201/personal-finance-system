@@ -59,6 +59,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         {"name": "房租", "type": "expense", "color_tag": "#800080"},
         {"name": "娛樂", "type": "expense", "color_tag": "#87CEFA"},
         {"name": "學習", "type": "expense", "color_tag": "#00008B"},
+        {"name": "其它", "type": "expense", "color_tag": "#00008B"},
     ]
 
     try:
