@@ -8,7 +8,7 @@ app = FastAPI()
 # ✅ 再馬上掛 middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5173"],  # 或 ["*"] 若還在測試
+    allow_origins=["http://localhost:5173"],  # 或 ["*"] 若還在測試
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
