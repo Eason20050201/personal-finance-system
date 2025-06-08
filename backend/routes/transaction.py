@@ -88,23 +88,27 @@ def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Dep
 
         for i, row in enumerate(reader, start=1):
             try:
+                amount = float(row["金額"])
+                transaction_type = "income" if amount > 0 else "expense"
+
                 db_transaction = Transaction(
-                    user_id=1,  # 假設為 1，可改為從 token 取得
+                    user_id=1,  # 先寫死，日後從 token 抓
                     transaction_date=row["日期"],
-                    amount=float(row["金額"]),
-                    note=row.get("備註", None),
-                    type="expense",  # 預設所有 CSV 交易都是支出
+                    amount=abs(amount),  # 存入資料統一為正值
+                    note=row.get("備註", ""),
+                    type=transaction_type,
                     account_id=1,
                     category_id=1,
                 )
                 db.add(db_transaction)
+
                 imported_data.append({
                     "transaction_date": row["日期"],
-                    "amount": float(row["金額"]),
-                    "note": row.get("備註", None),
-                    "type": "expense",
+                    "amount": abs(amount),
+                    "note": row.get("備註", ""),
+                    "type": transaction_type,
                     "account_id": 1,
-                    "category_id": 1
+                    "category_id": 1,
                 })
             except Exception as row_err:
                 raise HTTPException(
@@ -121,3 +125,8 @@ def import_transactions_from_csv(file: UploadFile = File(...), db: Session = Dep
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"CSV 匯入失敗：{str(e)}")
+
+@router.get("/", response_model=list[transaction_schema.TransactionOut])
+def get_all_transactions(db: Session = Depends(get_db)):
+    transactions = db.query(Transaction).all()
+    return transactions
