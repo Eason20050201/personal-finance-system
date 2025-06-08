@@ -3,6 +3,10 @@ from models.account import Account
 from schemas.account import AccountCreate
 from schemas.account import AccountUpdate
 
+# 📥 查詢某使用者的第一個（也是唯一）帳戶
+def get_account_by_user(db: Session, user_id: int):
+    return db.query(Account).filter(Account.user_id == user_id).first()
+
 # ➕ 建立一筆帳戶資料
 def create_account(db: Session, account_in: AccountCreate):
     db_account = Account(**account_in.dict())

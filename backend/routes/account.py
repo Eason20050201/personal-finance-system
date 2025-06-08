@@ -17,6 +17,14 @@ def create_account(
 ):
     return account_crud.create_account(db, account_in)
 
+# 📥 查詢某使用者的唯一帳戶（目前設計一個使用者只會有一個帳戶）
+@router.get("/by_user_id", response_model=account_schema.AccountOut)
+def get_account_by_user(user_id: int, db: Session = Depends(get_db)):
+    account = account_crud.get_account_by_user(db, user_id)
+    if not account:
+        raise HTTPException(status_code=404, detail="找不到該使用者的帳戶")
+    return account
+
 # 📥 查詢某使用者的所有帳戶
 @router.get("/{user_id}", response_model=list[account_schema.AccountOut])
 def get_accounts_by_user(user_id: int, db: Session = Depends(get_db)):

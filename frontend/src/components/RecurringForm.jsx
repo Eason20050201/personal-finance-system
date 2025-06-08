@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createRecurring } from '../api/recurring'
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../AuthContext'
+import api from '../api/axios'
 
 const RecurringForm = ({ onSuccess }) => {
-  const { user } = useAuth()  // ✅ hook 正確呼叫位置
-
-  console.log("✅ RecurringForm user:", user)
+  const { user } = useAuth()
 
   const [form, setForm] = useState({
-    account_id: 1,       // ✅ 暫時用測試值
+    account_id: '',  // ⛔ 先空的，等後端回傳再補上
     category_id: 2,
     amount: '',
     type: 'expense',
@@ -19,13 +18,28 @@ const RecurringForm = ({ onSuccess }) => {
     note: '',
   })
 
+  // ✅ 這裡自動載入 account_id
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const res = await api.get(`/accounts/by_user_id?user_id=${user.user_id}`)
+        const accountId = res.data.account_id
+        setForm(prev => ({ ...prev, account_id: accountId }))
+      } catch (err) {
+        console.error("⚠️ 載入帳戶失敗", err)
+        alert("無法載入帳戶資料")
+      }
+    }
+
+    fetchAccount()
+  }, [user.user_id])
+
   const handleChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
 
     const payload = {
       ...form,
@@ -43,9 +57,6 @@ const RecurringForm = ({ onSuccess }) => {
       if (err.response) {
         console.error('伺服器回應：', err.response.data)
         console.error('❌ 新增定期交易錯誤:', err)
-      if (err.response) {
-        console.error('⚠️ 錯誤詳情：', JSON.stringify(err.response.data, null, 2))
-      }
       }
     }
   }
