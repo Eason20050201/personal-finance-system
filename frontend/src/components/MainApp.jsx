@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useAuth } from '../AuthContext'
 import NavBar from './NavBar'
 import RecurringForm from './RecurringForm'
 import BudgetCards from './BudgetCards'
@@ -19,6 +20,7 @@ const MainApp = ({onLogout}) => {
   const reportRef = useRef(null)
   const savingsRef = useRef(null)
   const adviceRef = useRef(null)
+  const { user } = useAuth()
 
   const [showModal, setShowModal] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
@@ -47,28 +49,36 @@ const MainApp = ({onLogout}) => {
     }
   }
 
-  const handleCSVUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-     try {
-      const response = await api.post('/transactions/bulk-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-
-      console.log('✅ 匯入成功，後端回傳:', response.data)
-      alert('匯入成功')
-      setRefreshKey(prev => prev + 1)
-    } catch (error) {
-      console.error('匯入失敗:', error)
-      alert('匯入失敗')
-    }
+  
+  const handleCSVUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) {
+    alert('請選擇檔案')
+    return
   }
+
+  const userId = user?.user_id
+  console.log('userId:', userId)
+  console.log('file:', file)
+
+  const formData = new FormData()
+  formData.append('file', file) // ✅ 確保是真正的 File 物件
+  formData.append('user_id', String(userId))
+
+  try {
+    const res = await api.post('/transactions/bulk-csv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    console.log('✅ 匯入成功', res.data)
+    alert('匯入成功！')
+  } catch (err) {
+    console.error('❌ 匯入失敗:', err)
+    console.log('錯誤細節:', err.response?.data)
+    alert('匯入失敗：' + (err.response?.data?.detail?.[0]?.msg || err.message))
+  }
+}
   return (
     <div className="main-container">
       <NavBar onLogout={onLogout} onNavigate={handleScrollTo} />

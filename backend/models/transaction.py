@@ -23,6 +23,8 @@ class Transaction(Base):
     tags = Column(JSON) 
     created_at = Column(DateTime, default=now_tw)
     recurring_id = Column(Integer)
+    category = relationship("Category")
+
 
     # user = relationship("User", back_populates="transactions")
     # category = relationship("Category", back_populates="transactions")
