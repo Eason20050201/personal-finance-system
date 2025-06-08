@@ -9,6 +9,7 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     name = Column(String(100), nullable=False)
     type = Column(Enum("income", "expense", name="category_type"), nullable=False)
+    color_tag = Column(String(20))
 
     # user = relationship("User", back_populates="category")
     # transactions = relationship("Transaction", back_populates="category")

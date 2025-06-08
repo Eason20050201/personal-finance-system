@@ -8,7 +8,7 @@ class TransactionType(str, Enum):
 
 # ➕ 建立交易時的輸入資料格式
 class TransactionCreate(BaseModel):
-#    user_id: int
+    user_id: int
     
     amount: condecimal(max_digits=15, decimal_places=2)
     type: TransactionType

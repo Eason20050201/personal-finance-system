@@ -6,34 +6,69 @@ import { createTransaction } from '../api/transaction';
 import { getCategories } from '../api/category';
 
 const AddRecordModal = ({ onClose, onRecordAdded }) => {
-  const { user } = useAuth()  // ✅ hook 正確呼叫位置
+  const { user } = useAuth()
+  
   const [form, setForm] = useState({ 
     transaction_date: '', 
     amount: '', 
     type: '',
     note: '',
-    account_id: '',       // ✅ 暫時用測試值
-    category_id: '', 
+    account_id: '',  // ⛔ 起初為空，待 useEffect 自動補上
+    category_id: ''
   })
 
-  // ✅ 這裡自動載入 account_id
-    useEffect(() => {
-      const fetchAccount = async () => {
-        try {
-          const res = await api.get(`/accounts/by_user_id?user_id=${user.user_id}`)
-          const accountId = res.data.account_id
-          setForm(prev => ({ ...prev, account_id: accountId }))
-        } catch (err) {
-          console.error("⚠️ 載入帳戶失敗", err)
-          alert("無法載入帳戶資料")
-        }
+  const [categories, setCategories] = useState([])
+
+  // ✅ 自動載入 account_id
+  useEffect(() => {
+    const fetchAccount = async () => {
+      try {
+        const res = await api.get(`/accounts/by_user_id?user_id=${user.user_id}`)
+        const accountId = res.data.account_id
+        setForm(prev => ({ ...prev, account_id: accountId }))
+      } catch (err) {
+        console.error("⚠️ 載入帳戶失敗", err)
+        alert("無法載入帳戶資料")
       }
-  
+    }
+
+    if (user?.user_id) {
       fetchAccount()
-    }, [user.user_id])
+    }
+  }, [user])
+
+  // ✅ 自動載入分類
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get(`/categories/${user.user_id}`)
+        setCategories(res.data)
+      } catch (err) {
+        console.error('❌ 載入分類失敗:', err)
+      }
+    }
+
+    if (user?.user_id) {
+      fetchCategories()
+    }
+  }, [user])
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+  const { name, value } = e.target
+
+  // 如果使用者改變了 type，就清除已選的 category_id
+  if (name === 'type') {
+      setForm(prev => ({
+        ...prev,
+        type: value,
+        category_id: ''
+      }))
+    } else {
+      setForm(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -47,9 +82,10 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
       //category_id: parseInt(form.category_id),
     }
 
+    console.log("📦 傳送的資料:", payload)  // ← 這行加上！
+
     try {
       await api.post('/transactions/', payload)
-      //await createTransaction(payload)
       alert('新增成功')
       onRecordAdded()
       onClose()
@@ -65,21 +101,26 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
         <form onSubmit={handleSubmit}>
           <input type="date" name="transaction_date" value={form.transaction_date} onChange={handleChange} required />
           <input type="number" name="amount" placeholder="金額" value={form.amount} onChange={handleChange} required />
-          {/* <input type="text" name="category" placeholder="分類" value={form.category} onChange={handleChange} required /> */}
+          
           <select name="type" value={form.type} onChange={handleChange} required>
             <option value="">請選擇類型</option>
             <option value="expense">支出</option>
             <option value="income">收入</option>
           </select>
-          {/* <select name="category" value={form.category} onChange={handleChange} required> */}
+
           <select name="category_id" value={form.category_id} onChange={handleChange} required>
             <option value="">請選擇分類</option>
-            <option value="1">食品</option>
-            <option value="2">薪水</option>
-            <option value="3">娛樂</option>
-            <option value="4">交通</option>
+            {categories
+              .filter(cat => cat.type === form.type) // 🧠 根據當前選擇的 type 過濾
+              .map(cat => (
+                <option key={cat.category_id} value={cat.category_id}>
+                  {cat.name}
+                </option>
+              ))}
           </select>
+
           <input type="text" name="note" placeholder="備註" value={form.note} onChange={handleChange} />
+
           <div style={{ marginTop: '1rem' }}>
             <button type="submit">送出</button>
             <button type="button" onClick={onClose} style={{ marginLeft: '1rem' }}>取消</button>

@@ -8,6 +8,8 @@ from schemas.user import UserCreate, UserLogin
 from models.account import Account  # ← 確保你有這個 import
 from sqlalchemy.exc import SQLAlchemyError
 
+from models.category import Category  # 確保有 import
+
 router = APIRouter()
 
 @router.post("/register")
@@ -46,6 +48,34 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         db.rollback()
         print(f"❌ 帳戶建立失敗: {e}")
         raise HTTPException(status_code=500, detail="建立預設帳戶失敗")
+
+    # ➕ 預設分類
+    default_categories = [
+        {"name": "收入", "type": "income", "color_tag": "#FFD700"},
+        {"name": "餐飲", "type": "expense", "color_tag": "#FF0000"},
+        {"name": "購物", "type": "expense", "color_tag": "#FFA500"},
+        {"name": "交通", "type": "expense", "color_tag": "#00AA00"},
+        {"name": "銀行交易", "type": "expense", "color_tag": "#0000FF"},
+        {"name": "房租", "type": "expense", "color_tag": "#800080"},
+        {"name": "娛樂", "type": "expense", "color_tag": "#87CEFA"},
+        {"name": "學習", "type": "expense", "color_tag": "#00008B"},
+    ]
+
+    try:
+        for cat in default_categories:
+            new_category = Category(
+                user_id=db_user.user_id,
+                name=cat["name"],
+                type=cat["type"],
+                color_tag=cat["color_tag"]
+            )
+            db.add(new_category)
+        db.commit()
+        print(f"✅ 預設分類建立成功，共 {len(default_categories)} 筆")
+    except SQLAlchemyError as e:
+        db.rollback()
+        print(f"❌ 分類建立失敗: {e}")
+        raise HTTPException(status_code=500, detail="建立預設分類失敗")
 
     return {"message": "註冊成功"}
 
