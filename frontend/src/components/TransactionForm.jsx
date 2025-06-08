@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { createTransaction } from '../api/transaction';
+import { useAuth } from '../AuthContext'
+import api from '../api/axios'
 
 export default function TransactionForm() {
+  const { user } = useAuth()
   const [form, setForm] = useState({
     user_id: 1,
     amount: 0,

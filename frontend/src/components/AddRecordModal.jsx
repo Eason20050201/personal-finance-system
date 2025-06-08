@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../styles/AddRecordModal.css'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext';
 import { createTransaction } from '../api/transaction';
+import { getCategories } from '../api/category';
 
 const AddRecordModal = ({ onClose, onRecordAdded }) => {
   const { user } = useAuth()  // ✅ hook 正確呼叫位置
@@ -11,9 +12,25 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
     amount: '', 
     type: '',
     note: '',
-    account_id: 1,       // ✅ 暫時用測試值
-    category_id: 1, 
+    account_id: '',       // ✅ 暫時用測試值
+    category_id: '', 
   })
+
+  // ✅ 這裡自動載入 account_id
+    useEffect(() => {
+      const fetchAccount = async () => {
+        try {
+          const res = await api.get(`/accounts/by_user_id?user_id=${user.user_id}`)
+          const accountId = res.data.account_id
+          setForm(prev => ({ ...prev, account_id: accountId }))
+        } catch (err) {
+          console.error("⚠️ 載入帳戶失敗", err)
+          alert("無法載入帳戶資料")
+        }
+      }
+  
+      fetchAccount()
+    }, [user.user_id])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -26,8 +43,8 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
       ...form,
       user_id: user.user_id,
       amount: parseFloat(form.amount),
-      account_id: parseInt(form.account_id),
-      category_id: parseInt(form.category_id),
+      //account_id: parseInt(form.account_id),
+      //category_id: parseInt(form.category_id),
     }
 
     try {
@@ -57,10 +74,10 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
           {/* <select name="category" value={form.category} onChange={handleChange} required> */}
           <select name="category_id" value={form.category_id} onChange={handleChange} required>
             <option value="">請選擇分類</option>
-            <option value="1">餐飲</option>
-            <option value="2">交通</option>
+            <option value="1">食品</option>
+            <option value="2">薪水</option>
             <option value="3">娛樂</option>
-            <option value="4">收入</option>
+            <option value="4">交通</option>
           </select>
           <input type="text" name="note" placeholder="備註" value={form.note} onChange={handleChange} />
           <div style={{ marginTop: '1rem' }}>

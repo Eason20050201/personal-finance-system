@@ -9,6 +9,8 @@ import AdviceCards from './AdviceCards'
 import Papa from 'papaparse'
 import api from '../api/axios'
 import AddRecordModal from './AddRecordModal'
+import RecurringTable from './RecurringTable'
+
 
 const MainApp = ({onLogout}) => {
   const recurrRef = useRef(null)
@@ -20,8 +22,13 @@ const MainApp = ({onLogout}) => {
 
   const [showModal, setShowModal] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [recurringRefreshKey, setRecurringRefreshKey] = useState(0)
 
   const handleRecordAdded = () => setRefreshKey(prev => prev + 1)
+
+  const handleRecurringAdded = () => {
+    setRecurringRefreshKey(prev => prev + 1)
+  }
 
   const handleScrollTo = (section) => {
     const sectionMap = {
@@ -66,7 +73,10 @@ const MainApp = ({onLogout}) => {
     <div className="main-container">
       <NavBar onLogout={onLogout} onNavigate={handleScrollTo} />
 
-      <div ref={recurrRef}><RecurringForm onSubmit={(data) => console.log('定期交易提交:', data)} /></div>
+      <div ref={recurrRef}>
+        <RecurringForm onSuccess={handleRecurringAdded} onSubmit={(data) => console.log('定期交易提交:', data)} />
+        <RecurringTable key={recurringRefreshKey}/>
+      </div>
       
       <div className="quick-actions">
         <button className="action-btn" onClick={() => setShowModal(true)}>+ 收支記錄</button>
@@ -84,7 +94,7 @@ const MainApp = ({onLogout}) => {
           onRecordAdded={handleRecordAdded}
         />
       )}
-      
+
       <div ref={recordRef}><RecordTable key={refreshKey} /></div>
       <div ref={budgetRef}><BudgetCards /></div>
       <div ref={savingsRef}><SavingsGoals /></div>
