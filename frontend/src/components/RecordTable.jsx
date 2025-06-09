@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext'
 
-const RecordTable = () => {
+const RecordTable = ({ refreshTrigger, onEdit, onDelete }) => {
   const [records, setRecords] = useState([])
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date()
@@ -74,6 +74,7 @@ const RecordTable = () => {
             <th>金額</th>
             <th>類別</th>
             <th>備註</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -83,6 +84,35 @@ const RecordTable = () => {
               <td>{record.amount}</td>
               <td>{record.category?.name || '未知'}</td>
               <td>{record.note}</td>
+              <td>
+                <button
+                  onClick={() => onEdit(record)}
+                  style={{
+                    backgroundColor: '#1976d2',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.25rem 0.6rem',
+                    borderRadius: '4px',
+                    marginRight: '0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  編輯
+                </button>
+                <button
+                  onClick={() => onDelete(record.id)} 
+                  style={{
+                    backgroundColor: '#e53935',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.25rem 0.6rem',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  刪除
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

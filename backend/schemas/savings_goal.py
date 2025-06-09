@@ -6,7 +6,7 @@ class SavingsGoalCreate(BaseModel):
     user_id: int
     name: str
     target_amount: condecimal(max_digits=15, decimal_places=2)
-    current_amount: condecimal(max_digits=15, decimal_places=2) = 0
+    current_amount: condecimal(max_digits=15, decimal_places=2)
     target_date: date | None = None
     note: str | None = None
 

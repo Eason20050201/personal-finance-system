@@ -28,7 +28,32 @@ const MainApp = ({onLogout}) => {
   const [refreshKey, setRefreshKey] = useState(0)
   const [recurringRefreshKey, setRecurringRefreshKey] = useState(0)
   const [showRecurringModal, setShowRecurringModal] = useState(false)
+  const [editingRecurring, setEditingRecurring] = useState(null)
+  const [editingRecord, setEditingRecord] = useState(null)
 
+  const handleEditRecord = (record) => {
+    setEditingRecord(record)
+    setShowModal(true)
+  }
+
+  const handleDeleteRecord = async (transactionId) => {
+    if (!window.confirm('確定要刪除這筆紀錄嗎？')) return;
+
+    try {
+      await api.delete(`/transactions/${transactionId}`)
+      alert('刪除成功')
+      setRefreshKey(prev => prev + 1) // 重新載入資料
+    } catch (err) {
+      console.error('刪除失敗:', err)
+      alert('刪除失敗，請稍後再試')
+    }
+  }
+
+
+  const handleEdit = (item) => {
+    setEditingRecurring(item);
+    setShowRecurringModal(true);
+  };
 
   const handleRecordAdded = () => setRefreshKey(prev => prev + 1)
 
@@ -41,8 +66,8 @@ const MainApp = ({onLogout}) => {
       '定期交易': recurrRef,
       '收支記錄': recordRef,
       '預算管理': budgetRef,
-      '財務報表與圖表': reportRef,
       '儲蓄目標設定': savingsRef,
+      '財務報表與圖表': reportRef,
       '個人理財建議': adviceRef,
     }
     const targetRef = sectionMap[section]
@@ -96,14 +121,18 @@ const MainApp = ({onLogout}) => {
           <button className="action-btn" onClick={() => setShowRecurringModal(true)}>+ 定期交易</button>
         </div>
 
+        <RecurringTable key={recurringRefreshKey} onEdit={handleEdit}/>
+
         {showRecurringModal && (
           <RecurringModal
-            onClose={() => setShowRecurringModal(false)}
+            onClose={() => {
+              setShowRecurringModal(false)
+              setEditingRecurring(null)
+            }}
             onRecurringAdded={handleRecurringAdded}
+            editingData={editingRecurring} 
           />
         )}
-
-        <RecurringTable key={recurringRefreshKey} />
       </div>
 
       
@@ -114,17 +143,20 @@ const MainApp = ({onLogout}) => {
           匯入帳本
           <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ display: 'none' }} />
         </label>
-        <button className="action-btn">切換帳戶</button>
       </div>
 
       {showModal && (
         <AddRecordModal
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false)
+            setEditingRecord(null)
+          }}
           onRecordAdded={handleRecordAdded}
+          editingData={editingRecord}
         />
       )}
 
-      <div ref={recordRef}><RecordTable key={refreshKey} /></div>
+      <div ref={recordRef}><RecordTable key={refreshKey} refreshTrigger={refreshKey} onEdit={handleEditRecord} onDelete={handleDeleteRecord}/></div>
       <div ref={budgetRef}><BudgetCards /></div>
       <div ref={savingsRef}><SavingsGoals /></div>
       <div ref={reportRef}><FinancialCharts /></div>

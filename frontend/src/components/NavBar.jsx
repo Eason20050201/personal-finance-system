@@ -3,7 +3,7 @@ import { useState } from 'react'
 const NavBar = ({onLogout, onNavigate}) => {
   const [activeTab, setActiveTab] = useState('定期交易')
 
-  const tabs = ['定期交易', '提醒與警示', '收支記錄', '預算管理', '財務報表與圖表', '儲蓄目標設定', '個人理財建議']
+  const tabs = ['定期交易', '提醒與警示', '收支記錄', '預算管理', '儲蓄目標設定', '財務報表與圖表', '個人理財建議']
 
   return (
     <div className="nav-bar">
