@@ -19,7 +19,7 @@ export default function RecurringList() {
       <ul>
         {recurring.map((item) => (
           <li key={item.recurring_id}>
-            {item.frequency} {item.type === 'expense' ? '💸' : '💵'} ${item.amount} → {item.note}（{item.next_occurrence}）
+            {item.frequency} {item.category?.name} ${item.amount} → {item.note}（{item.next_occurrence}）
           </li>
         ))}
       </ul>

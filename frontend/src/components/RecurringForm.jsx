@@ -17,6 +17,44 @@ const RecurringForm = ({ onSuccess }) => {
     next_occurrence: '',
     note: '',
   })
+  const [categories, setCategories] = useState([])
+    useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get(`/categories/${user.user_id}`)
+        setCategories(res.data)
+      } catch (err) {
+        console.error("⚠️ 載入分類失敗", err)
+        alert("無法載入分類資料")
+      }
+    }
+
+    fetchCategories()
+  }, [user.user_id])
+
+  useEffect(() => {
+    if (!form.start_date || !form.frequency) return
+
+    const start = new Date(form.start_date)
+    let next = new Date(start)
+
+    switch (form.frequency) {
+      case 'daily':
+        next.setDate(start.getDate() + 1)
+        break
+      case 'weekly':
+        next.setDate(start.getDate() + 7)
+        break
+      case 'monthly':
+        next.setMonth(start.getMonth() + 1)
+        break
+      default:
+        break
+    }
+
+    const formatted = next.toISOString().split('T')[0]  // YYYY-MM-DD
+    setForm(prev => ({ ...prev, next_occurrence: formatted }))
+  }, [form.start_date, form.frequency])
 
   // ✅ 這裡自動載入 account_id
   useEffect(() => {
@@ -72,10 +110,14 @@ const RecurringForm = ({ onSuccess }) => {
           </div>
 
           <div className="form-group">
-            <label>類型</label>
-            <select name="type" value={form.type} onChange={handleChange}>
-              <option value="expense">支出</option>
-              <option value="income">收入</option>
+            <label>分類</label>
+            <select name="category_id" value={form.category_id} onChange={handleChange}>
+              <option value="">請選擇分類</option>
+              {categories.map((cat) => (
+                <option key={cat.category_id} value={cat.category_id}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -102,10 +144,10 @@ const RecurringForm = ({ onSuccess }) => {
             <input name="end_date" type="date" value={form.end_date} onChange={handleChange} />
           </div>
 
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>下次執行日</label>
             <input name="next_occurrence" type="date" value={form.next_occurrence} onChange={handleChange} />
-          </div>
+          </div> */}
         </div>
 
         <div className="form-row">

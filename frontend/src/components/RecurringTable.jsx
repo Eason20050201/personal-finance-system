@@ -4,20 +4,58 @@ import { useAuth } from '../AuthContext'
 
 const RecurringTable = () => {
   const [records, setRecords] = useState([])
+  const [categoryMap, setCategoryMap] = useState({})
+  const [recordsWithNext, setRecordsWithNext] = useState([])
   const { user } = useAuth()
 
   useEffect(() => {
+    let intervalId;
+
     const fetchRecurring = async () => {
       try {
-        const res = await api.get(`/recurring/user/${user.user_id}`) // 根據你的後端路由調整
+        const res = await api.get(`/recurring/user/${user.user_id}`)
         setRecords(res.data)
       } catch (err) {
         console.error('取得定期交易失敗:', err)
       }
     }
 
-    if (user) fetchRecurring()
+    if (user) {
+      fetchRecurring() // 首次進入就抓一次
+      intervalId = setInterval(fetchRecurring, 5000) // 每 5 秒抓一次
+    }
+
+    return () => clearInterval(intervalId) // 清除 interval
   }, [user])
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get(`/categories/${user.user_id}`)
+        const map = {}
+        res.data.forEach((cat) => {
+          map[cat.category_id] = cat.name
+        })
+        setCategoryMap(map)
+      } catch (err) {
+        console.error('⚠️ 載入分類失敗:', err)
+      }
+    }
+
+    if (user) fetchCategories()
+  }, [user])
+
+  // 計算下一次發生日
+  useEffect(() => {
+    setRecordsWithNext(records)
+  }, [records])
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '無'
+    const d = new Date(dateStr)
+    if (isNaN(d)) return '格式錯誤'
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
+  }
 
   return (
     <div className="section">
@@ -26,7 +64,7 @@ const RecurringTable = () => {
         <thead>
           <tr>
             <th>金額</th>
-            <th>類型</th>
+            <th>分類</th>
             <th>頻率</th>
             <th>起始日</th>
             <th>結束日</th>
@@ -35,14 +73,14 @@ const RecurringTable = () => {
           </tr>
         </thead>
         <tbody>
-          {records.map((item, index) => (
+          {recordsWithNext.map((item, index) => (
             <tr key={index}>
               <td>{item.amount}</td>
-              <td>{item.type}</td>
+              <td>{categoryMap[item.category_id] || '未知分類'}</td>
               <td>{item.frequency}</td>
-              <td>{item.start_date}</td>
-              <td>{item.end_date || '無'}</td>
-              <td>{item.next_occurrence}</td>
+              <td>{formatDate(item.start_date)}</td>
+              <td>{formatDate(item.end_date)}</td>
+              <td>{formatDate(item.next_occurrence)}</td>
               <td>{item.note}</td>
             </tr>
           ))}

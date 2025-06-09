@@ -2,28 +2,41 @@ import { useEffect, useState } from 'react'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext'
 
-const RecordTable = ({ refreshTrigger }) => {
+const RecordTable = () => {
   const [records, setRecords] = useState([])
   const { user } = useAuth()
 
-  useEffect(() => {
-    const fetchRecords = async () => {
-      if (!user?.user_id) {
-        console.warn("⚠️ 尚未登入或 user_id 不存在")
-        return
-      }
-
-      try {
-        const res = await api.get(`/transactions/all/${user.user_id}`)
-        console.log("✅ 抓到的交易資料：", res.data)
-        setRecords(res.data)
-      } catch (err) {
-        console.error('❌ 取得資料錯誤', err)
-      }
+  // 抓取交易紀錄的函式
+  const fetchRecords = async () => {
+    if (!user?.user_id) {
+      console.warn("⚠️ 尚未登入或 user_id 不存在")
+      return
     }
 
+    try {
+      // 處理定期交易（這會插入資料）
+      await api.post(`/recurring/process/${user.user_id}`)
+      console.log("✅ 已處理定期交易")
+
+      // 抓最新交易資料
+      const res = await api.get(`/transactions/all/${user.user_id}`)
+      console.log("✅ 抓到的交易資料：", res.data)
+      setRecords(res.data)
+    } catch (err) {
+      console.error("❌ 錯誤：", err)
+    }
+  }
+
+  // 初始載入 + 定時輪詢
+  useEffect(() => {
     fetchRecords()
-  }, [refreshTrigger, user])
+
+    const intervalId = setInterval(() => {
+      fetchRecords()
+    }, 5000) // 每 5 秒輪詢一次，你也可以調成 10000 (10 秒)
+
+    return () => clearInterval(intervalId) // 離開時清除計時器
+  }, [user])
 
   return (
     <div className="section">
@@ -42,7 +55,7 @@ const RecordTable = ({ refreshTrigger }) => {
             <tr key={index}>
               <td>{record.transaction_date}</td>
               <td>{record.amount}</td>
-              <td>{record.category?.name}</td>
+              <td>{record.category?.name || '未知'}</td>
               <td>{record.note}</td>
             </tr>
           ))}
