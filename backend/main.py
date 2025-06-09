@@ -9,8 +9,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # 本機開發用
-        "https://Eason20050201.github.io",  # GitHub Pages 網域
+        "http://localhost:5173",
+        "https://eason20050201.github.io",  # ✅ 小寫 eason
     ],
     allow_credentials=True,
     allow_methods=["*"],
