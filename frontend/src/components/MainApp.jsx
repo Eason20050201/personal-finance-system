@@ -29,6 +29,12 @@ const MainApp = ({onLogout}) => {
   const [recurringRefreshKey, setRecurringRefreshKey] = useState(0)
   const [showRecurringModal, setShowRecurringModal] = useState(false)
   const [editingRecurring, setEditingRecurring] = useState(null)
+  const [editingRecord, setEditingRecord] = useState(null)
+
+  const handleEditRecord = (record) => {
+    setEditingRecord(record)
+    setShowModal(true)
+  }
 
   const handleEdit = (item) => {
     setEditingRecurring(item);
@@ -128,12 +134,16 @@ const MainApp = ({onLogout}) => {
 
       {showModal && (
         <AddRecordModal
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false)
+            setEditingRecord(null)
+          }}
           onRecordAdded={handleRecordAdded}
+          editingData={editingRecord}
         />
       )}
 
-      <div ref={recordRef}><RecordTable key={refreshKey} /></div>
+      <div ref={recordRef}><RecordTable key={refreshKey} refreshTrigger={refreshKey} onEdit={handleEditRecord}/></div>
       <div ref={budgetRef}><BudgetCards /></div>
       <div ref={savingsRef}><SavingsGoals /></div>
       <div ref={reportRef}><FinancialCharts /></div>

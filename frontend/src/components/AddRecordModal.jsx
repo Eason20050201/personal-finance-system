@@ -5,7 +5,7 @@ import { useAuth } from '../AuthContext';
 import { createTransaction } from '../api/transaction';
 import { getCategories } from '../api/category';
 
-const AddRecordModal = ({ onClose, onRecordAdded }) => {
+const AddRecordModal = ({ onClose, onRecordAdded, editingData }) => {
   const { user } = useAuth()
   
   const [form, setForm] = useState({ 
@@ -53,6 +53,21 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
     }
   }, [user])
 
+  // 若是編輯模式，預設填入原有資料
+  useEffect(() => {
+    if (editingData) {
+      console.log("🛠️ 編輯模式資料：", editingData)
+      setForm({
+        ...editingData,
+        transaction_id: editingData.transaction_id || editingData.id,
+        amount: editingData.amount.toString(), // 確保是字串
+        transaction_date: editingData.transaction_date?.slice(0, 10), // 去掉時間部分
+        category_id: editingData.category?.category_id || editingData.category_id,
+        type: editingData.category?.type || editingData.type
+      })
+    }
+  }, [editingData])
+
   const handleChange = (e) => {
   const { name, value } = e.target
 
@@ -85,8 +100,15 @@ const AddRecordModal = ({ onClose, onRecordAdded }) => {
     console.log("📦 傳送的資料:", payload)  // ← 這行加上！
 
     try {
-      await api.post('/transactions/', payload)
-      alert('新增成功')
+      if (editingData?.transaction_id || editingData?.id) {
+        const id = editingData.transaction_id || editingData.id
+        await api.put(`/transactions/${id}`, payload)
+        // await api.put(`/transactions/${editingData.id}`, payload)
+        alert('更新成功')
+      } else {
+        await api.post('/transactions/', payload)
+        alert('新增成功')
+      }
       onRecordAdded()
       onClose()
     } catch (err) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext'
 
-const RecordTable = ({ refreshTrigger }) => {
+const RecordTable = ({ refreshTrigger, onEdit }) => {
   const [records, setRecords] = useState([])
   const { user } = useAuth()
 
@@ -35,6 +35,7 @@ const RecordTable = ({ refreshTrigger }) => {
             <th>金額</th>
             <th>類別</th>
             <th>備註</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -44,6 +45,22 @@ const RecordTable = ({ refreshTrigger }) => {
               <td>{record.amount}</td>
               <td>{record.category?.name}</td>
               <td>{record.note}</td>
+              <td>
+                <button
+                  onClick={() => onEdit(record)}
+                  style={{
+                    backgroundColor: '#1976d2',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.25rem 0.6rem',
+                    borderRadius: '4px',
+                    marginRight: '0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  編輯
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
