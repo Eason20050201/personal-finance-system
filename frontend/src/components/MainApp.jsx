@@ -46,8 +46,8 @@ const MainApp = ({onLogout}) => {
       '定期交易': recurrRef,
       '收支記錄': recordRef,
       '預算管理': budgetRef,
-      '財務報表與圖表': reportRef,
       '儲蓄目標設定': savingsRef,
+      '財務報表與圖表': reportRef,
       '個人理財建議': adviceRef,
     }
     const targetRef = sectionMap[section]
