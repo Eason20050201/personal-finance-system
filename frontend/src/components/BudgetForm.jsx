@@ -7,11 +7,12 @@ export default function BudgetForm({ onSuccess }) {
   const [form, setForm] = useState({
     category_id: 2,
     amount: '',
+    period: 'monthly',
     start_date: '',
     end_date: ''
   });
 
-  const [categories, setCategories] = useState([]) // ✅ 分類選項
+  const [categories, setCategories] = useState([]); // ✅ 分類選項
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,6 +25,16 @@ export default function BudgetForm({ onSuccess }) {
     };
     fetchCategories();
   }, []);
+
+  // ✅ 每 5 秒自動呼叫 onSuccess
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (typeof onSuccess === 'function') {
+        onSuccess();
+      }
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [onSuccess]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,11 +71,6 @@ export default function BudgetForm({ onSuccess }) {
       </select>
 
       <input name="amount" value={form.amount} type="number" placeholder="預算金額" onChange={handleChange} />
-      {/* <select name="period" value={form.period} onChange={handleChange}>
-        <option value="daily">每日</option>
-        <option value="weekly">每週</option>
-        <option value="monthly">每月</option>
-      </select> */}
       <input name="start_date" value={form.start_date} type="date" onChange={handleChange} />
       <input name="end_date" value={form.end_date} type="date" onChange={handleChange} />
       <button type="submit">送出</button>
