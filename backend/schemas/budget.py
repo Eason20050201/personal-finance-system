@@ -1,4 +1,4 @@
-from pydantic import BaseModel, condecimal
+from pydantic import BaseModel, condecimal, Field
 from datetime import date, datetime
 from typing import Optional
 
@@ -15,7 +15,7 @@ class BudgetCreate(BaseModel):
 # 📤 回傳預算資料格式
 class BudgetOut(BudgetCreate):
     budget_id: int
-    spent_amount: float
+    spent_amount: float = Field(0)
     created_at: datetime
     last_notified_at: Optional[date] = None
 

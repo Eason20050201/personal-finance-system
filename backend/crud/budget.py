@@ -17,7 +17,6 @@ def get_budgets_by_user(db: Session, user_id: int):
                 Transaction.category_id == budget.category_id,
                 Transaction.transaction_date >= budget.start_date,
                 Transaction.transaction_date <= budget.end_date,
-                (Transaction.category_id == budget.category_id if budget.category_id is not None else True),
                 Transaction.type == "expense"
             )
             .scalar()
