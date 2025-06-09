@@ -160,7 +160,7 @@ const MainApp = ({onLogout}) => {
       <div ref={budgetRef}><BudgetCards /></div>
       <div ref={savingsRef}><SavingsGoals /></div>
       <div ref={reportRef}><FinancialCharts /></div>
-      <div ref={adviceRef}><AdviceCards /></div>
+      {/* <div ref={adviceRef}><AdviceCards /></div> */}
     </div>
   )
 }
