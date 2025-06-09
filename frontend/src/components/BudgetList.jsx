@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../AuthContext';
 
-export default function BudgetList({ refreshTrigger }) {
+export default function BudgetList({ refreshTrigger, onEdit, onDelete  }) {
   const [budgetData, setBudgets] = useState([]);
   const { user } = useAuth();
   const [categories, setCategories] = useState([]);
@@ -46,8 +46,26 @@ export default function BudgetList({ refreshTrigger }) {
             : null;
 
         return (
-            <div className="budget-card" key={item.budget_id}>
-            <h4>{item.category_id ? getCategoryName(item.category_id) : '總預算'}</h4>
+            <div className="budget-card" key={item.budget_id} style={{ position: 'relative' }}>
+            {/* <h4>{item.category_id ? getCategoryName(item.category_id) : '總預算'}</h4> */}
+            <div className="goal-header">
+              <h4 className="goal-title">{item.category_id ? getCategoryName(item.category_id) : '總預算'}</h4>
+              <div className="goal-actions">
+                <button
+                  onClick={() => onEdit?.(item)}
+                  className="edit-btn"
+                >
+                  編輯
+                </button>
+                <button
+                  onClick={() => onDelete?.(item.budget_id)}
+                  className="delete-btn"
+                  style={{ marginLeft: '0.5rem' }}
+                >
+                  刪除
+                </button>
+              </div>
+            </div>
             <p>預算: ${item.amount}</p>
             <p>已花: ${item.spent_amount}</p>
             {/* <p>期間: {item.period}</p> */}

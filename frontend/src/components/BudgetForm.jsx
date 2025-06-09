@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../AuthContext';
 
-export default function BudgetForm({ onSuccess }) {
+export default function BudgetForm({ onSuccess, editingData }) {
   const { user } = useAuth();
   const [form, setForm] = useState({
     category_id: 2,
@@ -44,6 +44,17 @@ export default function BudgetForm({ onSuccess }) {
     return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    if (editingData) {
+      setForm({
+        category_id: editingData.category_id,
+        amount: editingData.amount,
+        start_date: editingData.start_date?.slice(0, 10),
+        end_date: editingData.end_date?.slice(0, 10),
+      });
+    }
+  }, [editingData]);
+
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -51,17 +62,36 @@ export default function BudgetForm({ onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/budgets', {
-        ...form,
-        user_id: user.user_id,
-        amount: parseFloat(form.amount),
-        category_id: form.category_id ? parseInt(form.category_id) : null
-      });
-      alert('預算已建立');
+      // await api.post('/budgets', {
+      //   ...form,
+      //   user_id: user.user_id,
+      //   amount: parseFloat(form.amount),
+      //   category_id: form.category_id ? parseInt(form.category_id) : null
+      // });
+      // alert('預算已建立');
+      if (editingData) {
+        // 修改模式：PUT
+        await api.put(`/budgets/${editingData.budget_id}`, {
+          ...form,
+          user_id: user.user_id,
+          amount: parseFloat(form.amount),
+          category_id: form.category_id ? parseInt(form.category_id) : null,
+        });
+        alert('預算已更新');
+      } else {
+        // 新增模式：POST
+        await api.post('/budgets', {
+          ...form,
+          user_id: user.user_id,
+          amount: parseFloat(form.amount),
+          category_id: form.category_id ? parseInt(form.category_id) : null,
+        });
+        alert('預算已建立');
+      }
       setForm({ category_id: '2', amount: '', start_date: '', end_date: '' });
       onSuccess();
     } catch (err) {
-      alert('建立失敗');
+      alert(editingData ? '更新失敗' : '建立失敗');
     }
   };
 
