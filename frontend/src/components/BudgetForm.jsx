@@ -7,7 +7,6 @@ export default function BudgetForm({ onSuccess }) {
   const [form, setForm] = useState({
     category_id: 2,
     amount: '',
-    period: 'monthly',
     start_date: '',
     end_date: ''
   });
@@ -39,7 +38,7 @@ export default function BudgetForm({ onSuccess }) {
         category_id: form.category_id ? parseInt(form.category_id) : null
       });
       alert('預算已建立');
-      setForm({ category_id: '', amount: '', period: 'monthly', start_date: '', end_date: '' });
+      setForm({ category_id: '', amount: '', start_date: '', end_date: '' });
       onSuccess();
     } catch (err) {
       alert('建立失敗');
@@ -61,11 +60,11 @@ export default function BudgetForm({ onSuccess }) {
       </select>
 
       <input name="amount" value={form.amount} type="number" placeholder="預算金額" onChange={handleChange} />
-      <select name="period" value={form.period} onChange={handleChange}>
+      {/* <select name="period" value={form.period} onChange={handleChange}>
         <option value="daily">每日</option>
         <option value="weekly">每週</option>
         <option value="monthly">每月</option>
-      </select>
+      </select> */}
       <input name="start_date" value={form.start_date} type="date" onChange={handleChange} />
       <input name="end_date" value={form.end_date} type="date" onChange={handleChange} />
       <button type="submit">送出</button>

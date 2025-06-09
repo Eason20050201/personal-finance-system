@@ -50,7 +50,7 @@ export default function BudgetList({ refreshTrigger }) {
             <h4>{item.category_id ? getCategoryName(item.category_id) : '總預算'}</h4>
             <p>預算: ${item.amount}</p>
             <p>已花: ${item.spent_amount}</p>
-            <p>期間: {item.period}</p>
+            {/* <p>期間: {item.period}</p> */}
             <p>起始日: {item.start_date?.slice(0, 10)}</p>
             <p>結束日: {item.end_date?.slice(0, 10)}</p>
 
