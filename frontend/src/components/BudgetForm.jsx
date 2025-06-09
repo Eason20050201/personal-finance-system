@@ -26,14 +26,24 @@ export default function BudgetForm({ onSuccess }) {
   }, []);
 
   // ✅ 每 5 秒自動呼叫 onSuccess
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     if (typeof onSuccess === 'function') {
+  //       onSuccess();
+  //     }
+  //   }, 5000);
+  //   return () => clearInterval(intervalId);
+  // }, [onSuccess]);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (typeof onSuccess === 'function') {
-        onSuccess();
-      }
+      // ❌ 不呼叫 onSuccess（因為會關 modal）
+      // 改呼叫 window.dispatchEvent 自定義事件
+      window.dispatchEvent(new Event('budget-refresh'));
     }, 5000);
     return () => clearInterval(intervalId);
-  }, [onSuccess]);
+  }, []);
+
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -56,23 +66,33 @@ export default function BudgetForm({ onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h4>新增預算</h4>
+    <form onSubmit={handleSubmit} className="budget-form">
+      <div className="form-group">
+        <label>分類</label>
+        <select name="category_id" value={form.category_id} onChange={handleChange}>
+          <option value="">選擇分類</option>
+          {categories.map((cat) => (
+            <option key={cat.category_id} value={cat.category_id}>{cat.name}</option>
+          ))}
+        </select>
+      </div>
 
-      {/* ✅ 分類下拉選單 */}
-      <select name="category_id" value={form.category_id} onChange={handleChange}>
-        <option value="">選擇分類</option>
-        {categories.map((cat) => (
-          <option key={cat.category_id} value={cat.category_id}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
+      <div className="form-group">
+        <label>金額</label>
+        <input name="amount" type="number" placeholder="預算金額" value={form.amount} onChange={handleChange} />
+      </div>
 
-      <input name="amount" value={form.amount} type="number" placeholder="預算金額" onChange={handleChange} />
-      <input name="start_date" value={form.start_date} type="date" onChange={handleChange} />
-      <input name="end_date" value={form.end_date} type="date" onChange={handleChange} />
-      <button type="submit">送出</button>
+      <div className="form-group">
+        <label>起始日</label>
+        <input name="start_date" type="date" value={form.start_date} onChange={handleChange} />
+      </div>
+
+      <div className="form-group">
+        <label>結束日</label>
+        <input name="end_date" type="date" value={form.end_date} onChange={handleChange} />
+      </div>
+
+      <button type="submit" className="submit-btn">送出</button>
     </form>
   );
 }
