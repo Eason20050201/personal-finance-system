@@ -7,7 +7,6 @@ export default function BudgetForm({ onSuccess }) {
   const [form, setForm] = useState({
     category_id: 2,
     amount: '',
-    period: 'monthly',
     start_date: '',
     end_date: ''
   });
@@ -49,7 +48,7 @@ export default function BudgetForm({ onSuccess }) {
         category_id: form.category_id ? parseInt(form.category_id) : null
       });
       alert('預算已建立');
-      setForm({ category_id: '', amount: '', start_date: '', end_date: '' });
+      setForm({ category_id: '2', amount: '', start_date: '', end_date: '' });
       onSuccess();
     } catch (err) {
       alert('建立失敗');
