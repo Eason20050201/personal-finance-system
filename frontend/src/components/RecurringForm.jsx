@@ -47,29 +47,43 @@ const RecurringForm = ({ onSuccess, editingData }) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  function computeNextOccurrence(startDateStr, frequency) {
+    if (!startDateStr) return null
+
+    // ⛔ 不要用 new Date("2025-06-09")，會受時區影響
+    const [year, month, day] = startDateStr.split('-').map(Number)
+    const date = new Date(year, month - 1, day)  // ✅ 正確建立本地時間的日期
+
+    switch (frequency) {
+      case 'daily':
+        date.setDate(date.getDate() + 1)
+        break
+      case 'weekly':
+        date.setDate(date.getDate() + 7)
+        break
+      case 'monthly': {
+        const originalDay = date.getDate()
+        date.setMonth(date.getMonth() + 1)
+
+        // 修正月底溢出問題
+        if (date.getDate() < originalDay) {
+          date.setDate(0) // 設為上個月的最後一天
+        }
+        break
+      }
+      default:
+        return null
+    }
+
+    return date.toISOString().split('T')[0]  // 回傳 YYYY-MM-DD
+  }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     console.log("🧪 editingData:", editingData)
 
-    // 根據起始日與頻率計算 next_occurrence
-    const getNextOccurrence = () => {
-      const start = new Date(form.start_date)
-      if (isNaN(start)) return null
-
-      let next = new Date(start)
-      switch (form.frequency) {
-        case 'daily':
-          next.setDate(next.getDate() + 1)
-          break
-        case 'weekly':
-          next.setDate(next.getDate() + 7)
-          break
-        case 'monthly':
-          next.setMonth(next.getMonth() + 1)
-          break
-      }
-      return next.toISOString().split('T')[0]  // 格式化成 YYYY-MM-DD
-    }
+    const nextOccurrence = computeNextOccurrence(form.start_date, form.frequency)
 
     const payload = {
       account_id: form.account_id || '',         // 預防缺失
@@ -79,7 +93,7 @@ const RecurringForm = ({ onSuccess, editingData }) => {
       frequency: form.frequency,
       start_date: form.start_date,
       end_date: form.end_date || null,
-      next_occurrence: getNextOccurrence(),
+      next_occurrence: nextOccurrence,
       note: form.note,
       user_id: user.user_id
     }
