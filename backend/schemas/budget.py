@@ -7,7 +7,6 @@ class BudgetCreate(BaseModel):
     user_id: int
     category_id: Optional[int] = None
     amount: condecimal(max_digits=15, decimal_places=2)
-    period: str  # 例如 'monthly'
     start_date: date
     end_date: date
     notify_interval_days: Optional[int] = 1  # 預設每天提醒
@@ -26,7 +25,6 @@ class BudgetOut(BudgetCreate):
 class BudgetUpdate(BaseModel):
     category_id: Optional[int] = None
     amount: Optional[condecimal(max_digits=15, decimal_places=2)] = None
-    period: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
     notify_interval_days: Optional[int] = None
