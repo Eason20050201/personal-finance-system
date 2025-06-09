@@ -5,7 +5,8 @@ class CategorySummary(BaseModel):
     category_id: int
     category_name: str
     total: condecimal(max_digits=15, decimal_places=2)
-    percentage: condecimal(max_digits=5, decimal_places=2)  # 百分比，如 32.50%
+    percentage: condecimal(max_digits=5, decimal_places=2)
+    color_tag: str
 
     class Config:
         orm_mode = True
