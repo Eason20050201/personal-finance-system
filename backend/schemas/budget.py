@@ -15,6 +15,7 @@ class BudgetCreate(BaseModel):
 # 📤 回傳預算資料格式
 class BudgetOut(BudgetCreate):
     budget_id: int
+    spent_amount: float
     created_at: datetime
     last_notified_at: Optional[date] = None
 

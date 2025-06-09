@@ -3,8 +3,14 @@ from sqlalchemy.orm import Session
 from database import get_db
 import crud.recurring_transaction as recurring_crud
 import schemas.recurring_transaction as recurring_schema
+from utils.recurring import process_recurring_transactions
 
 router = APIRouter(prefix="/recurring", tags=["recurring_transactions"])
+
+@router.post("/process/{user_id}")
+def process_user_recurring(user_id: int, db: Session = Depends(get_db)):
+    process_recurring_transactions(db, user_id)
+    return {"message": f"已處理 user_id={user_id} 的定期交易"}
 
 # ➕ 建立週期性交易
 @router.post("/", response_model=recurring_schema.RecurringTransactionOut)
