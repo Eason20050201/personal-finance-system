@@ -13,6 +13,10 @@ const FinancialCharts = () => {
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const { user } = useAuth()
+  const isEmptyData = totalIncome === 0 && totalExpense === 0
+  const pieData = isEmptyData
+    ? [{ type: '無資料', amount: 1, color: '#ccc' }]  // 灰色圖表用
+    : data
 
   // 初次載入時預設為當月
   const toDateInputString = (dateObj) => {
@@ -95,6 +99,7 @@ const FinancialCharts = () => {
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem' }}>       
         {/* 圓餅圖區塊 + 中心餘額 */}
+        
         <div style={{ position: 'relative', width: 500, height: 450 }}>
           {/* 中心餘額顯示 */}
           <div style={{
@@ -105,7 +110,7 @@ const FinancialCharts = () => {
             textAlign: 'center',
             fontWeight: 'bold',
             fontSize: '18px',
-            pointerEvents: 'none'  // 避免蓋住 PieChart 滑鼠事件
+            pointerEvents: 'none'
           }}>
           <div>餘額</div>
             <div>NT${(totalIncome - totalExpense).toLocaleString()}</div>
@@ -114,7 +119,7 @@ const FinancialCharts = () => {
           {/* 圓餅圖 */}
           <PieChart width={500} height={450} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
             <Pie
-              data={data}
+              data={pieData}
               dataKey="amount"
               nameKey="type"
               cx="50%"
@@ -126,7 +131,7 @@ const FinancialCharts = () => {
               labelLine={false}
               label={false}
             >
-              {data.map((entry, index) => (
+              {pieData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
@@ -136,7 +141,8 @@ const FinancialCharts = () => {
         {/* 圖例區塊 */}
         <div style={{ marginLeft: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '300px' }}>
           <div style={{ marginBottom: '1rem', fontWeight: 'bold' }}>
-            總收入：NT${totalIncome.toLocaleString()}
+            總收入：NT${totalIncome.toLocaleString()} <br/>
+            總支出：NT${totalExpense.toLocaleString()}
           </div>
           <table style={{ borderCollapse: 'collapse', fontSize: '16px' }}>
             <thead>
