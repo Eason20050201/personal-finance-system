@@ -13,6 +13,11 @@ export const getCategorySummary = (userId, startDate, endDate) => {
   });
 };
 
+export const getIncomeExpenseTotals = (user_id, start_date, end_date) =>
+  api.get(`/reports/totals`, {
+    params: { user_id, start_date, end_date }
+  })
+
 // 🔧 新增這個函數
 function fixInvalidDate(dateStr) {
   const date = new Date(dateStr);
