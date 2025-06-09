@@ -15,7 +15,7 @@ const RecurringModal = ({ onClose, onRecurringAdded, editingData }) => {
         />
 
         {/* <button className="action-btn" onClick={onClose} style={{ marginTop: '1rem' }}>取消</button> */}
-        <div className="form-row" style={{ justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+        <div className="form-row" style={{ justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
           <button className="cancel-btn" onClick={onClose} style={{ marginTop: '1rem' }}>取消</button>
         </div>
       </div>

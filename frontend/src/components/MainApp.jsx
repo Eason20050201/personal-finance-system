@@ -143,7 +143,6 @@ const MainApp = ({onLogout}) => {
           匯入帳本
           <input type="file" accept=".csv" onChange={handleCSVUpload} style={{ display: 'none' }} />
         </label>
-        <button className="action-btn">切換帳戶</button>
       </div>
 
       {showModal && (
