@@ -4,6 +4,8 @@ from database import get_db
 import crud.report as report_crud
 import schemas.report as report_schema
 from datetime import date
+from sqlalchemy import func
+from models.transaction import Transaction
 
 router = APIRouter(
     prefix="/reports",
@@ -27,3 +29,29 @@ def get_category_summary(
     if not summary:
         raise HTTPException(status_code=404, detail="No expense data found for this user and time period")
     return summary
+
+# 📊 查詢使用者在指定期間內的支出與收入總額
+@router.get("/totals", response_model=dict)
+def get_income_expense_totals(
+    user_id: int = Query(...),
+    start_date: date = Query(...),
+    end_date: date = Query(...),
+    db: Session = Depends(get_db)
+):
+    from models.transaction import Transaction
+
+    income = db.query(func.sum(Transaction.amount))\
+        .filter(
+            Transaction.user_id == user_id,
+            Transaction.type == "income",
+            Transaction.transaction_date.between(start_date, end_date)
+        ).scalar() or 0
+
+    expense = db.query(func.sum(Transaction.amount))\
+        .filter(
+            Transaction.user_id == user_id,
+            Transaction.type == "expense",
+            Transaction.transaction_date.between(start_date, end_date)
+        ).scalar() or 0
+
+    return {"income": income, "expense": expense}

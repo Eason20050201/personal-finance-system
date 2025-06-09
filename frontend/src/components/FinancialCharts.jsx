@@ -1,4 +1,5 @@
 import { getCategorySummary } from '../api/report'
+import { getIncomeExpenseTotals } from '../api/report'
 import { useAuth } from '../AuthContext'
 import { useEffect, useState } from 'react'
 import {
@@ -6,6 +7,8 @@ import {
 } from 'recharts'
 
 const FinancialCharts = () => {
+  const [totalIncome, setTotalIncome] = useState(0)
+  const [totalExpense, setTotalExpense] = useState(0)
   const [data, setData] = useState([])
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
@@ -13,7 +16,7 @@ const FinancialCharts = () => {
 
   // 初次載入時預設為當月
   const toDateInputString = (dateObj) => {
-  return dateObj.toLocaleDateString('sv-SE')  // "2025-06-01"
+    return dateObj.toLocaleDateString('sv-SE')  // "2025-06-01"
   }
 
   useEffect(() => {
@@ -32,6 +35,10 @@ const FinancialCharts = () => {
     const fetchData = async () => {
       if (!user || !startDate || !endDate) return
       try {
+        const totals = await getIncomeExpenseTotals(user.user_id, startDate, endDate)
+        setTotalIncome(totals.data.income)
+        setTotalExpense(totals.data.expense)
+
         const res = await getCategorySummary(user.user_id, startDate, endDate)
 
         const formatted = res.data.map(item => ({
@@ -53,6 +60,17 @@ const FinancialCharts = () => {
   return (
     <div className="section">
       <h3 className="section-title">財務報表圖表</h3>
+      
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: '18px'
+      }}>
+      </div>
 
       <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
         <label>
@@ -76,29 +94,50 @@ const FinancialCharts = () => {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem' }}>       
-        {/* 圓餅圖區塊 */}
-        <PieChart width={500} height={450} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-          <Pie
-            data={data}
-            dataKey="amount"
-            nameKey="type"
-            cx="50%"
-            cy="50%"
-            outerRadius={140}
-            innerRadius={80}
-            startAngle={90}
-            endAngle={-270}
-            labelLine={false}
-            label={false}
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
+        {/* 圓餅圖區塊 + 中心餘額 */}
+        <div style={{ position: 'relative', width: 500, height: 450 }}>
+          {/* 中心餘額顯示 */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            pointerEvents: 'none'  // 避免蓋住 PieChart 滑鼠事件
+          }}>
+          <div>餘額</div>
+            <div>NT${(totalIncome - totalExpense).toLocaleString()}</div>
+          </div>
+
+          {/* 圓餅圖 */}
+          <PieChart width={500} height={450} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+            <Pie
+              data={data}
+              dataKey="amount"
+              nameKey="type"
+              cx="50%"
+              cy="50%"
+              outerRadius={140}
+              innerRadius={80}
+              startAngle={90}
+              endAngle={-270}
+              labelLine={false}
+              label={false}
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+          </PieChart>
+        </div>
 
         {/* 圖例區塊 */}
-        <div style={{ marginLeft: '2rem', display: 'flex', alignItems: 'center', height: '500px' }}>
+        <div style={{ marginLeft: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '300px' }}>
+          <div style={{ marginBottom: '1rem', fontWeight: 'bold' }}>
+            總收入：NT${totalIncome.toLocaleString()}
+          </div>
           <table style={{ borderCollapse: 'collapse', fontSize: '16px' }}>
             <thead>
               <tr>
