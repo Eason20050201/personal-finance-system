@@ -4,9 +4,13 @@ import { useAuth } from '../AuthContext'
 
 const RecordTable = () => {
   const [records, setRecords] = useState([])
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date()
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  })
+
   const { user } = useAuth()
 
-  // 抓取交易紀錄的函式
   const fetchRecords = async () => {
     if (!user?.user_id) {
       console.warn("⚠️ 尚未登入或 user_id 不存在")
@@ -20,27 +24,49 @@ const RecordTable = () => {
 
       // 抓最新交易資料
       const res = await api.get(`/transactions/all/${user.user_id}`)
-      console.log("✅ 抓到的交易資料：", res.data)
-      setRecords(res.data)
+
+      const [selectedYear, selectedMonthNum] = selectedMonth.split('-').map(Number)
+
+      const filtered = res.data.filter((record) => {
+        const txDate = new Date(record.transaction_date)
+        return (
+          txDate.getFullYear() === selectedYear &&
+          txDate.getMonth() === selectedMonthNum - 1
+        )
+      })
+
+      const sorted = filtered.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date))
+
+      console.log("✅ 選定月份的交易資料：", sorted)
+      setRecords(sorted)
     } catch (err) {
       console.error("❌ 錯誤：", err)
     }
   }
 
-  // 初始載入 + 定時輪詢
   useEffect(() => {
     fetchRecords()
 
     const intervalId = setInterval(() => {
       fetchRecords()
-    }, 5000) // 每 5 秒輪詢一次，你也可以調成 10000 (10 秒)
+    }, 5000)
 
-    return () => clearInterval(intervalId) // 離開時清除計時器
-  }, [user])
+    return () => clearInterval(intervalId)
+  }, [user, selectedMonth])
 
   return (
     <div className="section">
       <h3 className="section-title">收入與支出紀錄</h3>
+
+      <div className="month-selector" style={{ marginBottom: '1rem' }}>
+        <label>選擇月份：</label>
+        <input
+          type="month"
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+        />
+      </div>
+
       <table className="record-table">
         <thead>
           <tr>
