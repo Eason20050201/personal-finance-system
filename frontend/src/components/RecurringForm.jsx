@@ -49,6 +49,27 @@ const RecurringForm = ({ onSuccess, editingData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log("🧪 editingData:", editingData)
+
+    // 根據起始日與頻率計算 next_occurrence
+    const getNextOccurrence = () => {
+      const start = new Date(form.start_date)
+      if (isNaN(start)) return null
+
+      let next = new Date(start)
+      switch (form.frequency) {
+        case 'daily':
+          next.setDate(next.getDate() + 1)
+          break
+        case 'weekly':
+          next.setDate(next.getDate() + 7)
+          break
+        case 'monthly':
+          next.setMonth(next.getMonth() + 1)
+          break
+      }
+      return next.toISOString().split('T')[0]  // 格式化成 YYYY-MM-DD
+    }
 
     const payload = {
       account_id: form.account_id || '',         // 預防缺失
@@ -58,14 +79,14 @@ const RecurringForm = ({ onSuccess, editingData }) => {
       frequency: form.frequency,
       start_date: form.start_date,
       end_date: form.end_date || null,
-      next_occurrence: form.next_occurrence || null,
+      next_occurrence: getNextOccurrence(),
       note: form.note,
       user_id: user.user_id
     }
 
     try {
       if (editingData) {
-        await api.put(`/recurring/${editingData.id}`, payload)
+        await api.put(`/recurring/${editingData.recurring_id}`, payload)
         alert('更新成功')
       } else {
         await createRecurring(payload)

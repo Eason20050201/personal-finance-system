@@ -32,6 +32,7 @@ const RecurringTable = ({ onEdit }) => {
             <th>結束日</th>
             <th>下次發生日</th>
             <th>備註</th>
+            <th>編輯</th>
           </tr>
         </thead>
         <tbody>
