@@ -82,7 +82,10 @@ const FinancialCharts = () => {
           <input
             type="date"
             value={startDate}
-            onChange={e => setStartDate(e.target.value)}
+            onChange={e => {
+            console.log('使用者選擇的起始日期:', e.target.value)
+            setStartDate(e.target.value)
+          }}
             style={{ marginLeft: '0.5rem' }}
           />
         </label>
@@ -91,7 +94,10 @@ const FinancialCharts = () => {
           <input
             type="date"
             value={endDate}
-            onChange={e => setEndDate(e.target.value)}
+            onChange={e => {
+              console.log('使用者選擇的結束日期:', e.target.value)
+              setEndDate(e.target.value)
+            }}
             style={{ marginLeft: '0.5rem' }}
           />
         </label>

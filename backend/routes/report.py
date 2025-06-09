@@ -26,9 +26,7 @@ def get_category_summary(
         start_date=start_date,
         end_date=end_date
     )
-    if not summary:
-        raise HTTPException(status_code=404, detail="No expense data found for this user and time period")
-    return summary
+    return summary  # ✅ 就算 summary 是空陣列也沒關係
 
 # 📊 查詢使用者在指定期間內的支出與收入總額
 @router.get("/totals", response_model=dict)

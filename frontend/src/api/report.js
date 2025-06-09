@@ -3,6 +3,8 @@ import api from './axios';
 export const getCategorySummary = (userId, startDate, endDate) => {
   // 🛡 修正非法日期，例如 2025-06-31 → 2025-06-30
   const safeEndDate = fixInvalidDate(endDate);
+  
+  console.log('🚀 呼叫 getCategorySummary:', { userId, startDate, endDate: safeEndDate });
 
   return api.get('/reports/category-summary', {
     params: {
