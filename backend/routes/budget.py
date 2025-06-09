@@ -21,9 +21,7 @@ def create_budget(
 @router.get("/{user_id}", response_model=list[budget_schema.BudgetOut])
 def get_budgets_by_user(user_id: int, db: Session = Depends(get_db)):
     budgets = budget_crud.get_budgets_by_user(db, user_id)
-    if not budgets:
-        raise HTTPException(status_code=404, detail="No budgets found for this user")
-    return budgets
+    return budgets  # ← 不用 raise error，直接回傳空清單
 
 @router.put("/{budget_id}", response_model=budget_schema.BudgetOut)
 def update_budget(
