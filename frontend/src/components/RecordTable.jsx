@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../api/axios'
 import { useAuth } from '../AuthContext'
 
-const RecordTable = ({ refreshTrigger, onEdit }) => {
+const RecordTable = ({ refreshTrigger, onEdit, onDelete }) => {
   const [records, setRecords] = useState([])
   const { user } = useAuth()
 
@@ -59,6 +59,19 @@ const RecordTable = ({ refreshTrigger, onEdit }) => {
                   }}
                 >
                   編輯
+                </button>
+                <button
+                  onClick={() => onDelete(record.id)} 
+                  style={{
+                    backgroundColor: '#e53935',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.25rem 0.6rem',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  刪除
                 </button>
               </td>
             </tr>

@@ -36,6 +36,20 @@ const MainApp = ({onLogout}) => {
     setShowModal(true)
   }
 
+  const handleDeleteRecord = async (transactionId) => {
+    if (!window.confirm('確定要刪除這筆紀錄嗎？')) return;
+
+    try {
+      await api.delete(`/transactions/${transactionId}`)
+      alert('刪除成功')
+      setRefreshKey(prev => prev + 1) // 重新載入資料
+    } catch (err) {
+      console.error('刪除失敗:', err)
+      alert('刪除失敗，請稍後再試')
+    }
+  }
+
+
   const handleEdit = (item) => {
     setEditingRecurring(item);
     setShowRecurringModal(true);
@@ -143,7 +157,7 @@ const MainApp = ({onLogout}) => {
         />
       )}
 
-      <div ref={recordRef}><RecordTable key={refreshKey} refreshTrigger={refreshKey} onEdit={handleEditRecord}/></div>
+      <div ref={recordRef}><RecordTable key={refreshKey} refreshTrigger={refreshKey} onEdit={handleEditRecord} onDelete={handleDeleteRecord}/></div>
       <div ref={budgetRef}><BudgetCards /></div>
       <div ref={savingsRef}><SavingsGoals /></div>
       <div ref={reportRef}><FinancialCharts /></div>
