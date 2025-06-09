@@ -8,7 +8,10 @@ app = FastAPI()
 # ✅ 再馬上掛 middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # 或 ["*"] 若還在測試
+    allow_origins=[
+        "http://localhost:5173",  # 本機開發用
+        "https://Eason20050201.github.io",  # GitHub Pages 網域
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
