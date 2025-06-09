@@ -57,14 +57,6 @@ const Register = ({ onRegisterSuccess }) => {
           <label>再次輸入密碼</label>
           <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
         </div>
-        <div className="form-group">
-          <label>偏好貨幣</label>
-          <select name="currency_preference" value={form.currency_preference} onChange={handleChange}>
-            <option value="TWD">TWD（台幣）</option>
-            <option value="USD">USD（美元）</option>
-            <option value="JPY">JPY（日圓）</option>
-          </select>
-        </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <button className="login-btn" type="submit">註冊</button>
         <button
