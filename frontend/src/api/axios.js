@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://alert-vanilla-pennsylvania-winston.trycloudflare.com',
+  baseURL: 'https://field-command-schema-min.trycloudflare.com',
   withCredentials: true
 })
 
