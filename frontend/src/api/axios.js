@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://friendly-weird-finland-star.trycloudflare.com',
+  baseURL: 'https://ss-referring-og-encoding.trycloudflare.com',
   withCredentials: true
 })
 
