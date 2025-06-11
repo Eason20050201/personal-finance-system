@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://pregnancy-linux-calculator-portion.trycloudflare.com',
+  baseURL: 'https://friendly-weird-finland-star.trycloudflare.com',
   withCredentials: true
 })
 
