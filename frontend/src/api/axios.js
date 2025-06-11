@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://blvd-kingdom-cambridge-energy.trycloudflare.com',
+  baseURL: 'https://figured-lawyers-flux-prime.trycloudflare.com',
   withCredentials: true
 })
 
