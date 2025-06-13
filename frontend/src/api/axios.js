@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://figured-lawyers-flux-prime.trycloudflare.com',
+  baseURL: 'https://customize-ips-deeper-drugs.trycloudflare.com',
   withCredentials: true
 })
 
